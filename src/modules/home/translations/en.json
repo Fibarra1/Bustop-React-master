@@ -1,0 +1,36 @@
+{
+    "routes": {
+        "title": "Routes",
+        "searchRoute": "Select Route"
+    },
+    "selectRoute": {
+        "title1": "where do you",
+        "title2": "want to go?",
+        "origin": "Origin",
+        "destiny": "Destiny"
+    },
+    "settings": {
+        "title": "Settings",
+        "subtitle1": "Account Settings",
+        "subtitle2": "App Settings",
+        "placeholder": {
+            "name": "Name",
+            "password": "Current Password",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm Password"
+        },
+        "selectLanguage": "Select Language",
+        "button": {
+            "save": "Save",
+            "signOff": "Sign Off"
+        },
+        "errorMessage": {
+            "requiredName": "The name cannot be empty",
+            "requiredPassword": "The current password cannot be empty",
+            "requiredNewPassword": "The new password cannot be empty",
+            "requiredConfirmPassword": "The confirm password cannot be empty",
+            "lengthPassword": "The password must have at least 8 characters",
+            "passwordsNotMatch": "The passwords do not match"
+        }
+    }
+}

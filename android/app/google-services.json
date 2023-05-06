@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "978163588725",
+    "project_id": "bustop-14c87",
+    "storage_bucket": "bustop-14c87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978163588725:android:eb94e4a2f1a237e152223c",
+        "android_client_info": {
+          "package_name": "com.bustop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978163588725-f1mjvbeh8akclq5bfshevurn4mhtij2v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf99VIQuYkZ6M8tQL7XwTivaOtbsCifVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978163588725-e054sr7pg0g7d0doj5hv6tvvau1oqdmg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

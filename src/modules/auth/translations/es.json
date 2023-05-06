@@ -1,0 +1,87 @@
+{
+    
+    "loginmethod": {
+        "google": "Cuenta Google",
+        "facebook": "Cuenta FaceBook",
+        "email": "Correo Electrónico",
+        "letacount": "No tengo cuenta.",
+        "letreg": "Registrarme"
+    },
+    
+    "loginEmail": {
+
+        "textViews": {
+            "tv1": "INGRESA EMAIL",
+            "tv2": "INGRESA LA CONTRASEÑA",
+            "tv3": "¿Olvidaste tu contraseña?"
+        },
+
+        "holders": {
+            "email": "Email Ej: email@mail.com",
+            "pass": "Contraseña"
+        },
+
+        "btns": {
+            "btnStartSesion": "Iniciar Sesion",
+            "btnRestPass": "Restablecer Contraseña"
+        },
+        
+        "messageError": {
+            "emailVacio": "El campo email no puede ser vacio",
+            "emailInvalid": "Correo Invalido",
+            "passVacio": "El campo contraseña no puede ser vacio",
+            "passInvalid": "El campo debe contener al menos 6 caracteres"
+        }
+    },
+
+    "registeruser": {
+        "header":{
+            "title": "Registro"
+        },
+
+        "holders":{
+            "name": "Nombre",
+            "appa": "Apellido Paterno",
+            "apma": "Apellido Materno",
+            "email": "Correo Electrónico",
+            "cel": "Celular",
+            "digit": "(10 Digitos)",
+            "password": "contraseña",
+            "reppassword":"repite la contraseña"
+        },
+
+        "letterminos": "He leído y aceptado la ",
+        "letterminoslink": "política de privacidad",
+        "alert": {
+            "title": "Aviso",
+            "body": "Recibiras un aviso de verificacion en tu correo para activar tu cuenta",
+            "btnacept": "Aceptar"
+        },
+
+        "btns": {
+            "btnSave": "Guardar"
+        },
+
+        "messageError": {
+            "campoVacio": "El campo no puede estar vacio",
+            "nameInvalid": "El campo nombre debe ser mas de 3 caracteres",
+            "apPaInvalid": "El campo apellido debe ser mas de 3 caracteres",
+            "apMaInvalid": "El campo apellido debe ser mas de 3 caracteres",
+            "emailInvalid": "Correo electronico invalido",
+            "celInvalid": "El campo debe conter 10 digitos",
+            "passInvalid": "Contraseña corta debe tener 8 digitos",
+            "passInvalid2": "La contraseña no coincide",
+            "checkSelect": "Debes aceptar la politica de privacidad"
+        }
+    },
+
+    "resetPassword": {
+        "title": "Restablecer Contraseña",
+        "textView": "Ingresar el correo electronico",
+        "holders": {
+            "email": "email@mail.com"
+        },
+        "btnSend": "Enviar"
+    }
+
+}

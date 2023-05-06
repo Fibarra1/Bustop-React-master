@@ -1,0 +1,36 @@
+{
+    "routes": {
+        "title": "Rutas",
+        "searchRoute": "Seleccionar ruta"
+    },
+    "selectRoute": {
+        "title1": "¿a dónde",
+        "title2": "quieres ir?",
+        "origin": "Origen",
+        "destiny": "Destino"
+    },
+    "settings": {
+        "title": "Configuración",
+        "subtitle1": "Información de la cuenta",
+        "subtitle2": "Configuración de la aplicación",
+        "placeholder": {
+            "name": "Nombre",
+            "password": "Contraseña Actual",
+            "newPassword": "Nueva Contraseña",
+            "confirmPassword": "Confirmar contraseña"
+        },
+        "selectLanguage": "Seleccionar idioma",
+        "button": {
+            "save": "Guardar",
+            "signOff": "Cerrar sesión"
+        },
+        "errorMessage": {
+            "requiredName": "El nombre no puede estar vacío",
+            "requiredPassword": "La contraseña no puede estar vacía",
+            "requiredNewPassword": "La nueva contraseña no puede estar vacía",
+            "requiredConfirmPassword": "La confirmación de la contraseña no puede estar vacía",
+            "lengthPassword": "La contraseña debe tener al menos 8 caracteres",
+            "passwordsNotMatch": "Las contraseñas no coinciden"
+        }
+    }
+}
