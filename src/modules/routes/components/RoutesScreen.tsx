@@ -47,6 +47,7 @@ const RoutesScreen = () => {
         nombre: null,
         latitud: null,
         longitud: null
+        
     })
     
 
