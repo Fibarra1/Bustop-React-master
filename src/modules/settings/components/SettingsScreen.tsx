@@ -92,10 +92,12 @@ const SettingsScreen = () => {
 
     const onSingOff = () => {
         logout()
-        auth()
-            .signOut()
-            .then(() => console.log('Sesión cerrada correctamente.'))
-            .catch(error => console.error('Error al cerrar sesión:', error));
+        if (user) {
+            auth()
+                .signOut()
+                .then(() => console.log('Sesión cerrada correctamente.'))
+                .catch(error => console.error('Error al cerrar sesión:', error));
+        }
     }
 
     console.log(currentUser)
