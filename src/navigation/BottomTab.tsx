@@ -12,8 +12,12 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import globalStyles from "../styles/GlobalStyles";
 import { useOrientation } from "../hooks/useOrientation";
 import { RouteScreen } from "../modules/routes/components/RouteScreen";
+import auth from '@react-native-firebase/auth';
+
 
 const Tab = createBottomTabNavigator();
+const user = auth().currentUser;
+
 
 export const BottomTab = () => {
     const { isPortrait } = useOrientation();

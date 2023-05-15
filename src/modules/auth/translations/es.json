@@ -2,7 +2,7 @@
     
     "loginmethod": {
         "google": "Cuenta Google",
-        "facebook": "Cuenta FaceBook",
+        "facebook": "Cuenta Facebook",
         "email": "Correo Electrónico",
         "letacount": "No tengo cuenta.",
         "letreg": "Registrarme"

@@ -1,7 +1,7 @@
 {
     "loginmethod": {
         "google": "Account Google",
-        "facebook": "Account FaceBook",
+        "facebook": "Account Facebook",
         "email": "Email",
         "letacount": "I do not have an account",
         "letreg": "sign up"

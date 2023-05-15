@@ -54,6 +54,8 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
         }
     }
 
+    
+
 
     return (
         <AuthContext.Provider

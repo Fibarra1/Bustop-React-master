@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, ScrollView, Alert, Platform, Button } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, Alert, Platform, Button, TouchableOpacity, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next';
 import '../../home/translations/i18n';
 import SquareRoute from './SquareRoute';
@@ -10,7 +10,10 @@ import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 import globalStyles from '../../../styles/GlobalStyles';
 
+
 const RoutesScreen = () => {
+
+
 
     const API_URL = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Paradas';
 
@@ -18,7 +21,7 @@ const RoutesScreen = () => {
         latitude: 0,
         longitude: 0
     });
-    
+
     const [cambiolocalizacion, setCambiolocalizacion] = useState({
         latitude: 0,
         longitude: 0
@@ -43,13 +46,7 @@ const RoutesScreen = () => {
     }, []);
 
     const [paradas, setParadas] = useState([]);
-    const [resp, setResp] = useState({
-        nombre: null,
-        latitud: null,
-        longitud: null
-        
-    })
-    
+
 
     useEffect(() => {
         axios.get(API_URL)
@@ -62,7 +59,8 @@ const RoutesScreen = () => {
             });
     }, []);
 
-    
+
+
 
 
     const { t } = useTranslation();
@@ -72,18 +70,26 @@ const RoutesScreen = () => {
         errorMessage: ""
 
     })
+    const [filteredData, setFilteredData] = useState([]);
 
     const handleSelectRoute = (value: string) => {
         setSeletedRoute({
             value,
             errorMessage: ""
         })
-        
+        const newData = paradas.filter((item) =>
+            item.nombre.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredData(newData);
     }
 
-    
+  
 
-    
+
+
+
+
+
 
     return (
 
@@ -99,6 +105,21 @@ const RoutesScreen = () => {
                 errorMessage={selectedRoute.errorMessage}
             />
             <View >
+                {selectedRoute.value.length > 0 &&
+                    <View style={{ backgroundColor: 'white' }}>
+                            <FlatList
+                            data={filteredData}
+                            renderItem={({ item }) => 
+                            <TouchableOpacity>
+                            <Text style={{color: 'black', fontSize:20}}>{item.nombre}
+                            </Text>
+                            </TouchableOpacity>
+                            }
+                            keyExtractor={(item) => item.idParada}
+                            />
+                    </View>
+
+                }
                 <MapView
                     style={styles.map}
                     region={{

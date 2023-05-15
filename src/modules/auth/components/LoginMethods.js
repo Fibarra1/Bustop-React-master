@@ -10,11 +10,16 @@ import imgEmail from '../icons/email.png';
 import globalStyles from '../../../styles/GlobalStyles';
 import Login from './Login';
 import { useContextAuth } from '../../../context/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import auth from '@react-native-firebase/auth';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
 
 const LoginMethods = ({ navigation }) => {
+
+
+
 
   const { t, i18n } = useTranslation();
 
@@ -62,6 +67,30 @@ const LoginMethods = ({ navigation }) => {
   requestLocationPermission();
 
 
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+      if (result.isCancelled) {
+        throw new Error('El inicio de sesión con Facebook fue cancelado.');
+      }
+
+      const data = await AccessToken.getCurrentAccessToken();
+
+      if (!data) {
+        throw new Error('No se ha proporcionado ningún token de acceso de Facebook.');
+      }
+
+      const credential = auth.FacebookAuthProvider.credential(data.accessToken);
+
+      await auth().signInWithCredential(credential);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
   return (
     <SafeAreaView style={styles.contenedor} >
       <ScrollView>
@@ -84,11 +113,9 @@ const LoginMethods = ({ navigation }) => {
             </View>
           </Pressable>
           <Pressable style={[styles.btnLogins, styles.btnFacebook]}
-            onPress={() => {
-              changeLanguage('es')
-              console.log('presionado')
-            }
-            }
+
+            onPress={() => handleFacebookLogin()}
+
           >
             <View style={styles.btnContenedor} >
               <Image style={styles.btnIcon} source={imgFacebook} />
@@ -119,19 +146,13 @@ const LoginMethods = ({ navigation }) => {
           </Pressable>
 
           <Pressable style={[styles.btnLogins, styles.btnCorreo]}
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('RestablecerPass')}
           >
             <View style={styles.btnContenedor} >
               <Text style={styles.btnTexto} >{t('Recuperar Contraseña')}</Text>
             </View>
           </Pressable>
         </View>
-        {/* <Button
-          onPress={() => {
-            requestLocationPermission();
-          }}
-          title="Permitir acceso a la ubicación"
-        /> */}
 
       </ScrollView>
     </SafeAreaView>

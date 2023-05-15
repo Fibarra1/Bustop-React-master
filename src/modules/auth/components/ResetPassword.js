@@ -1,5 +1,6 @@
-import React, {useState} from 'react'
-import { SafeAreaView, StyleSheet, Dimensions, Pressable, View, TextInput, Text, ScrollView,Image,Alert } from 'react-native'
+import React, { useState } from 'react'
+import { SafeAreaView, StyleSheet, Dimensions, Pressable, View, TextInput, Text, ScrollView, Image, Alert } from 'react-native'
+import auth from '@react-native-firebase/auth';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
@@ -13,20 +14,20 @@ import Spinner from 'react-native-loading-spinner-overlay';
 //importados de assets
 import logo from '../../../assets/logo.png';
 
-const ResetPassword = ({navigation}) => {
+const ResetPassword = ({ navigation }) => {
 
-    const {t, i18n} = useTranslation();//funcion para pasar el valor del translate
+    const { t, i18n } = useTranslation();//funcion para pasar el valor del translate
     const [email, setEmail] = useState('');
-    const [errorEmail,setErrorEmail] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);// ESTADO DE CUANDO SERA VISIBLE EL PROGRES BAR
-    
-    const validEmail = () =>{
+
+    const validEmail = () => {
         const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;// validacion de correo validos
 
-        if(email === ''){
+        if (email === '') {
             setErrorEmail('El campo no puede ser vacio');
             return false;
-        }else if(!emailRegex.test(email)){
+        } else if (!emailRegex.test(email)) {
             setErrorEmail('Correo Invalido');
             return false;
         }
@@ -36,84 +37,108 @@ const ResetPassword = ({navigation}) => {
 
     }
 
-    const postRestePassword = () => {
+    // const postRestePassword = () => {
 
-        console.log(email)
-        setIsLoading(false);
-        /* AQIU FALTA EL ENDPON DE RESETEAR PASSWORD */
-        Alert.alert(
-            'Se envio el correo con exito',
-            'Verifica en tu correo electronico te llegara una liga con la que podras restablecer tu contraseña',
-            [
-                {text: 'Aceptar', onPress: () => {
-                    console.log('Reenviar a login')
-                    //reenviar a login
-                    navigation.goBack();
-            }},
-              ],
-              { cancelable: false }
-          );
+    //     console.log(email)
+    //     setIsLoading(false);
+    //     /* AQIU FALTA EL ENDPON DE RESETEAR PASSWORD */
+    //     Alert.alert(
+    //         'Se envio el correo con exito',
+    //         'Verifica en tu correo electronico te llegara una liga con la que podras restablecer tu contraseña',
+    //         [
+    //             {
+    //                 text: 'Aceptar', onPress: () => {
+    //                     console.log('Reenviar a login')
+    //                     //reenviar a login
+    //                     navigation.goBack();
+    //                 }
+    //             },
+    //         ],
+    //         { cancelable: false }
+    //     );
 
-    }
+    // }
 
-    const sendPassReset = () => {
-        if(validEmail()){
-            setIsLoading(true);
-            postRestePassword()
-        }
-    }
+    // const sendPassReset = () => {
+    //     if (validEmail()) {
+    //         setIsLoading(true);
+    //         postRestePassword()
+    //     }
+    // };
 
-  return (
-    <SafeAreaView style={styles.contenedor} >
+    const handleResetPassword = () => {
+        auth().sendPasswordResetEmail(email)
+            .then(() => {
+                Alert.alert(
+                    'Se envio el correo con exito',
+                    'Verifica en tu correo electronico te llegara una liga con la que podras restablecer tu contraseña',
+                    [
+                        {
+                            text: 'Aceptar', onPress: () => {
+                                //reenviar a login
+                                navigation.navigate('Login')
+                            }
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            })
+            .catch((error) => {
+                console.log('Error sending password reset email', error);
+            });
+    };
+
+    return (
+        <SafeAreaView style={styles.contenedor} >
 
             <ScrollView>
                 <View>
-                    <Text style = {styles.tituloComponent} >{t('resetPassword:title')}</Text>
+                    <Text style={styles.tituloComponent} >{t('resetPassword:title')}</Text>
                 </View>
 
                 <View style={styles.centrarImgLogo} >
 
                     <Image style={styles.imagen}
                         source={logo}
-                        >
-                    </Image>    
+                    >
+                    </Image>
                 </View>
 
                 <View style={styles.contenedorForm} >
 
-                
+
 
                     <Text style={styles.texto} >{t('resetPassword:textView')}</Text>
 
                     {/* ES EL PROGRES BAR DE CARGANDO */}
-                    <Spinner visible={isLoading} />    
+                    <Spinner visible={isLoading} />
 
                     <TextInput
-                            placeholder={t('resetPassword:holders:email')}
-                            placeholderTextColor= '#FFF'
-                            style= {styles.input}
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            keyboardType='email-address'
-                            value={email}
-                            onChangeText={setEmail}
-                        />   
-                        {errorEmail ? <Text style={styles.error}>{errorEmail}</Text> : null}
-                                    
+                        placeholder={t('resetPassword:holders:email')}
+                        placeholderTextColor='#FFF'
+                        style={styles.input}
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                        keyboardType='email-address'
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                    {errorEmail ? <Text style={styles.error}>{errorEmail}</Text> : null}
+
 
                     <Pressable style={styles.btn}
-                        onPress={ () => {
-                            sendPassReset();
+                        onPress={() => {
+                            handleResetPassword();
                         }}
                     >
-                        <Text style = {[styles.btnTexto]} >{t('resetPassword:btnSend')}</Text>
+                        <Text style={[styles.btnTexto]} >{t('resetPassword:btnSend')}</Text>
                     </Pressable>
 
                 </View>
             </ScrollView>
-           
-    </SafeAreaView>
-  )
+
+        </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -127,7 +152,7 @@ const styles = StyleSheet.create({
     tituloComponent: {
         color: '#FFF',
         textAlignVertical: 'center',
-        marginTop: height1*0.09,
+        marginTop: height1 * 0.09,
         textAlign: 'center',
         fontSize: height1 * 0.05,//asi se consige las letras responsivas
         fontWeight: '700'
@@ -135,53 +160,53 @@ const styles = StyleSheet.create({
 
     centrarImgLogo: {
         alignItems: 'center',
-        marginTop: height1*0.03
-      },
-    
-      imagen:{
-        width: width1*0.4,
-        height: height1*0.2,
-      },
-    
+        marginTop: height1 * 0.03
+    },
+
+    imagen: {
+        width: width1 * 0.4,
+        height: height1 * 0.2,
+    },
+
 
     texto: {
         color: '#FFF',
-        fontSize: height1*0.03,
-        marginBottom: width1*0.05
+        fontSize: height1 * 0.03,
+        marginBottom: width1 * 0.05
     },
 
     contenedorForm: {
         alignItems: 'center',
-        marginTop: height1*0.05,
+        marginTop: height1 * 0.05,
         marginBottom: 10
     },
 
     input: {
-        width: width1*0.8,
+        width: width1 * 0.8,
         borderBottomColor: 'gray',
         borderBottomWidth: 4,
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
-        fontSize: height1*0.025,
+        fontSize: height1 * 0.025,
         color: '#FFF',
-        marginTop: height1*0.04,
+        marginTop: height1 * 0.04,
     },
 
     btnTexto: {
         color: 'black',
-        fontSize: width1*0.05,
+        fontSize: width1 * 0.05,
         fontWeight: '600',
         textAlign: 'center'
     },
 
     btn: {
-        marginTop: height1*0.08,
+        marginTop: height1 * 0.08,
         ...globalStyles.btnColor,
         borderRadius: 10,
         padding: 10,
-        width: width1*0.5,
-        height: height1*0.066
+        width: width1 * 0.5,
+        height: height1 * 0.066
     },
 
     error: {
@@ -189,7 +214,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: -10,
         textAlign: 'center'
-      },
+    },
 })
 
 export default ResetPassword
