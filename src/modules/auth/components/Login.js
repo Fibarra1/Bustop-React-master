@@ -24,7 +24,6 @@ const Login = ({ navigation }) => {
   const [passError, setPassError] = useState(''); //var para guardar el error de pass
   const [isLoading, setIsLoading] = useState(false);// ESTADO DE CUANDO SERA VISIBLE EL PROGRES BAR
 
-  const [datos, setDatos] = useState('');
 
   const { login } = useContext(AuthContext)
   /* AQI ES UN EJEMPLO DE COMO LLAMR A MS METODOS 
@@ -106,6 +105,7 @@ const Login = ({ navigation }) => {
       //no hace nada 
     }
   }
+  
 
   return (
     <SafeAreaView style={styles.contenedor} >

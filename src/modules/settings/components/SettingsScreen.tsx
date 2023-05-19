@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import '../../home/translations/i18n';
@@ -8,6 +8,7 @@ import { MyInput } from '../../shared/components/MyInput';
 import { MyPicker } from '../../shared/components/MyPicker';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
+import { getLogin } from '../../auth/services/AuthServices';
 
 
 const languageOptions = [
@@ -26,9 +27,11 @@ const SettingsScreen = () => {
 
     const user = auth().currentUser;
 
-    const currentUser = auth().currentUser;
+
 
     const { logout } = useContext(AuthContext)
+
+    
 
 
     const resetPasswordInputs = () => {
@@ -100,7 +103,6 @@ const SettingsScreen = () => {
         }
     }
 
-    console.log(currentUser)
 
 
 
@@ -109,37 +111,7 @@ const SettingsScreen = () => {
 
     // console.log('El último inicio de sesión fue realizado con:', lastSignInProviderId);
 
-    // Verifica si el usuario está autenticado
-    if (currentUser) {
-        // Obtén información sobre los proveedores de autenticación utilizados para iniciar sesión
-        const providers = currentUser.providerData.map((provider) => provider.providerId);
-        console.log(providers)
-
-        // Verifica si el usuario inició sesión mediante correo electrónico
-        if (providers.includes('password')) {
-            console.log('El usuario inició sesión con correo electrónico');
-        }
-
-        // Verifica si el usuario inició sesión con Google
-        if (providers.includes('google.com')) {
-            console.log('El usuario inició sesión con Google');
-        }
-
-        // Verifica si el usuario inició sesión con Facebook
-        if (providers.includes('facebook.com')) {
-            console.log('El usuario inició sesión con Facebook');
-        }
-
-        // Verifica si el usuario inició sesión con otro proveedor de autenticación
-        if (providers.filter((provider) => provider !== 'password' && provider !== 'google.com' && provider !== 'facebook.com').length > 0) {
-            console.log('El usuario inició sesión con otro proveedor de autenticación');
-        }
-    } else {
-        // El usuario no está autenticado
-
-        console.log('El usuario no está autenticado');
-    }
-
+    
 
 
     return (
