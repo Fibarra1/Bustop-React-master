@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { postLogin, getLogin } from '../services/AuthServices'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../../../context/auth';
+import SettingsScreen from '../../settings/components/SettingsScreen';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
@@ -105,7 +106,7 @@ const Login = ({ navigation }) => {
       //no hace nada 
     }
   }
-  
+   
 
   return (
     <SafeAreaView style={styles.contenedor} >

@@ -110,7 +110,11 @@ const RoutesScreen = () => {
                             <FlatList
                             data={filteredData}
                             renderItem={({ item }) => 
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                const latitude = item.latitud
+                                const longitude = item.longitud
+                                setCambiolocalizacion({latitude, longitude})
+                            }}>
                             <Text style={{color: 'black', fontSize:20}}>{item.nombre}
                             </Text>
                             </TouchableOpacity>

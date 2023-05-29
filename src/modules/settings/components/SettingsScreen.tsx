@@ -8,7 +8,6 @@ import { MyInput } from '../../shared/components/MyInput';
 import { MyPicker } from '../../shared/components/MyPicker';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
-import { getLogin } from '../../auth/services/AuthServices';
 
 
 const languageOptions = [
@@ -31,7 +30,7 @@ const SettingsScreen = () => {
 
     const { logout } = useContext(AuthContext)
 
-    
+
 
 
     const resetPasswordInputs = () => {
@@ -106,12 +105,6 @@ const SettingsScreen = () => {
 
 
 
-    // const providerData = user.providerData;
-    // const lastSignInProviderId = providerData[providerData.length - 1].providerId;
-
-    // console.log('El último inicio de sesión fue realizado con:', lastSignInProviderId);
-
-    
 
 
     return (
