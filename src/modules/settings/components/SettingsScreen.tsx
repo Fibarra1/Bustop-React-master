@@ -23,8 +23,10 @@ const SettingsScreen = () => {
     const [newPassword, setNewPassword] = useState({ value: '', errorMessage: '' })
     const [confirmPassword, setConfirmPassword] = useState({ value: '', errorMessage: '' })
 
+    const {user} = useContext(AuthContext)
 
-    const user = auth().currentUser;
+
+    const userAuth = auth().currentUser;
 
 
 
@@ -94,7 +96,8 @@ const SettingsScreen = () => {
 
     const onSingOff = () => {
         logout()
-        if (user) {
+        if (userAuth) {
+            logout
             auth()
                 .signOut()
                 .then(() => console.log('Sesión cerrada correctamente.'))
@@ -102,6 +105,7 @@ const SettingsScreen = () => {
         }
     }
 
+    console.log(user.uid)
 
 
 
@@ -112,7 +116,7 @@ const SettingsScreen = () => {
             <Text style={styles.title}>{t('settings:title')}</Text>
             <View style={styles.settingsContainer} >
 
-                {!user &&
+                {!userAuth &&
 
 
                     <View>

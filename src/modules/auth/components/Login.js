@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { postLogin, getLogin } from '../services/AuthServices'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../../../context/auth';
-import SettingsScreen from '../../settings/components/SettingsScreen';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
@@ -24,6 +23,7 @@ const Login = ({ navigation }) => {
   const [emailError, setEmailError] = useState(''); //var para guardar el error de email
   const [passError, setPassError] = useState(''); //var para guardar el error de pass
   const [isLoading, setIsLoading] = useState(false);// ESTADO DE CUANDO SERA VISIBLE EL PROGRES BAR
+  const [userID, setUserID] = useState();
 
 
   const { login } = useContext(AuthContext)
@@ -95,6 +95,7 @@ const Login = ({ navigation }) => {
         const response = await postLogin(email.trim(), pass.toString().trim());
         if (response.status === 200) {
           console.log(response.data);
+          setUserID(response.data[0].uid) 
           console.log(response.status);
           login(response.data[0])
         }
@@ -106,6 +107,7 @@ const Login = ({ navigation }) => {
       //no hace nada 
     }
   }
+
    
 
   return (
