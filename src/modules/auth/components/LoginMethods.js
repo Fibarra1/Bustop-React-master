@@ -10,14 +10,15 @@ import imgEmail from '../icons/email.png';
 import globalStyles from '../../../styles/GlobalStyles';
 import Login from './Login';
 import { useContextAuth } from '../../../context/auth';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import auth from '@react-native-firebase/auth';
-// import { LoginButton, AccessToken } from 'react-native-fbsdk';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { BannerAd, TestIds, BannerAdSize } from '@react-native-admob/admob';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
 
 const LoginMethods = ({ navigation }) => {
+
 
 
 
@@ -90,38 +91,61 @@ const LoginMethods = ({ navigation }) => {
   //   }
   // }
 
-  const handleFacebookLogin = async () => {
-    // Solicita los permisos necesarios a través del LoginButton
-    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
-      (result) => {
-        if (result.isCancelled) {
-          console.log('Inicio de sesión cancelado');
-        } else {
-          // Obtiene el token de acceso de Facebook
-          AccessToken.getCurrentAccessToken().then((data) => {
-            const facebookCredential = auth.FacebookAuthProvider.credential(
-              data.accessToken
-            );
-  
-            // Inicia sesión en Firebase con las credenciales de Facebook
-            auth()
-              .signInWithCredential(facebookCredential)
-              .then((userCredential) => {
-                // El usuario ha iniciado sesión correctamente
-                const user = userCredential.user;
-                console.log('Usuario de Firebase:', user);
-              })
-              .catch((error) => {
-                console.log('Error al iniciar sesión:', error);
-              });
-          });
-        }
-      },
-      (error) => {
-        console.log('Error al iniciar sesión con Facebook:', error);
-      }
-    );
-  };
+  // const handleFacebookLogin = async () => {
+  //   // Solicita los permisos necesarios a través del LoginButton
+  //   LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+  //     (result) => {
+  //       if (result.isCancelled) {
+  //         console.log('Inicio de sesión cancelado');
+  //       } else {
+  //         // Obtiene el token de acceso de Facebook
+  //         AccessToken.getCurrentAccessToken().then((data) => {
+  //           const facebookCredential = auth.FacebookAuthProvider.credential(
+  //             data.accessToken
+  //           );
+
+  //           // Inicia sesión en Firebase con las credenciales de Facebook
+  //           auth()
+  //             .signInWithCredential(facebookCredential)
+  //             .then((userCredential) => {
+  //               // El usuario ha iniciado sesión correctamente
+  //               const user = userCredential.user;
+  //               console.log('Usuario de Firebase:', user);
+  //             })
+  //             .catch((error) => {
+  //               console.log('Error al iniciar sesión:', error);
+  //             });
+  //         });
+  //       }
+  //     },
+  //     (error) => {
+  //       console.log('Error al iniciar sesión con Facebook:', error);
+  //     }
+  //   );
+  // };
+
+
+  async function onFacebookButtonPress() {
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(facebookCredential);
+  }
 
 
 
@@ -148,7 +172,7 @@ const LoginMethods = ({ navigation }) => {
           </Pressable>
           <Pressable style={[styles.btnLogins, styles.btnFacebook]}
 
-            onPress={() => handleFacebookLogin()}
+            onPress={() => onFacebookButtonPress()}
 
           >
             <View style={styles.btnContenedor} >
@@ -188,6 +212,9 @@ const LoginMethods = ({ navigation }) => {
           </Pressable>
         </View>
 
+        <View>
+          <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   )

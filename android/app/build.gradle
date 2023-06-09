@@ -8,6 +8,7 @@ project.ext.vectoricons = [
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
+// import com.facebook.FacebookSdk;
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -163,6 +164,7 @@ dependencies {
     implementation('com.facebook.android:facebook-login:[5,6)')
     // implementation('com.facebook.android:facebook-android-sdk:5.15.3')
     implementation('com.facebook.android:facebook-android-sdk:[8,9)')
+    implementation('com.google.android.gms:play-services-ads:22.1.0')
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 

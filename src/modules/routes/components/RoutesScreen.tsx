@@ -9,6 +9,7 @@ import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 import globalStyles from '../../../styles/GlobalStyles';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 
 
 const RoutesScreen = () => {
@@ -83,7 +84,7 @@ const RoutesScreen = () => {
         setFilteredData(newData);
     }
 
-  
+
 
 
 
@@ -96,6 +97,10 @@ const RoutesScreen = () => {
 
         <ScrollView style={styles.container}>
 
+            <View>
+                <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
+            </View>
+
 
             <Text style={styles.title}>{t('routes:title')}</Text>
             <MyInput
@@ -106,21 +111,22 @@ const RoutesScreen = () => {
             />
             <View >
                 {selectedRoute.value.length > 0 &&
-                    <View style={{ backgroundColor: 'white' }}>
-                            <FlatList
+                    <View style={styles.flatListContainer}>
+                        <FlatList
                             data={filteredData}
-                            renderItem={({ item }) => 
-                            <TouchableOpacity onPress={() => {
-                                const latitude = item.latitud
-                                const longitude = item.longitud
-                                setCambiolocalizacion({latitude, longitude})
-                            }}>
-                            <Text style={{color: 'black', fontSize:20}}>{item.nombre}
-                            </Text>
-                            </TouchableOpacity>
+                            renderItem={({ item }) =>
+                                <TouchableOpacity onPress={() => {
+                                    const latitude = item.latitud
+                                    const longitude = item.longitud
+                                    setCambiolocalizacion({ latitude, longitude })
+                                }}>
+                                    <Text onPress={() => {
+                                    }} style={{ color: 'black', fontSize: 20 }}>{item.nombre}
+                                    </Text>
+                                </TouchableOpacity>
                             }
                             keyExtractor={(item) => item.idParada}
-                            />
+                        />
                     </View>
 
                 }
@@ -179,7 +185,7 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
-        marginBottom: '10%',
+        // marginBottom: '10%',
         ...globalStyles.contenedor
     },
     title: {
@@ -201,9 +207,17 @@ const styles = StyleSheet.create({
 
     },
     map: {
-        width: '100%',
-        height: '100%',
-
+        flex: 1,
+        width: "100%",
+        height: 500
+    },
+    flatListContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1,
+        backgroundColor: 'white',
     },
 })
 

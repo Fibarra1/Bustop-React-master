@@ -7,13 +7,18 @@ import { MyInput } from '../../shared/components/MyInput'
 import { MainLayout } from '../../layout/components/MainLayout';
 import MapView from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 
 
 export const RouteScreen = () => {
 
 
+
     return (
         <View style={styles.container}>
+            <View>
+                <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
+            </View>
             <Text style={styles.title}>{"Ruta"}</Text>
 
             <View style={styles.rowRoutes}>
@@ -65,12 +70,13 @@ const styles = StyleSheet.create({
     },
     rowRoutes: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         marginVertical: 40,
+        marginHorizontal: 97
     },
     map: {
         width: '100%',
         height: '100%',
-        
+
     },
 })

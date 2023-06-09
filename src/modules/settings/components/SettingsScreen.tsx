@@ -8,6 +8,7 @@ import { MyInput } from '../../shared/components/MyInput';
 import { MyPicker } from '../../shared/components/MyPicker';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
+import axios from 'axios';
 
 
 const languageOptions = [
@@ -105,7 +106,28 @@ const SettingsScreen = () => {
         }
     }
 
-    console.log(user.uid)
+    console.log(user)
+
+    const uid = user.uid
+
+
+    const editarNombreUsuario = async () => {
+        try {
+          const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Usuarios/${uid}`;
+          const datosActualizados = {
+            nombre: name.value
+          };
+          const response = await axios.put(url, datosActualizados);
+          
+          // Manejar la respuesta del servidor aquí
+          console.log('Nombre de usuario editado:', response.data.nombre);
+          
+          // Actualizar la interfaz de usuario con el nuevo nombre
+          // ...
+        } catch (error) {
+          console.error('Error al editar el nombre del usuario:', error);
+        }
+      };
 
 
 
@@ -126,7 +148,7 @@ const SettingsScreen = () => {
                             placeholder={t('settings:placeholder:name')}
                             value={name.value}
                             onChangeText={(value) => setName({ ...name, value })} />
-                        <MyButton onPress={onChangeName} content={'Guardar'} />
+                        <MyButton onPress={editarNombreUsuario} content={'Guardar'} />
 
                         <MyInput
                             errorMessage={currentPassword.errorMessage}
