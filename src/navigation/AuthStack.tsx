@@ -4,11 +4,11 @@ import LoginMethods from '../modules/auth/components/LoginMethods';
 import RegisterUser from '../modules/auth/components/RegisterUser'
 import ResetPassword from '../modules/auth/components/ResetPassword';
 
-const Auth = createNativeStackNavigator();
 
 //video https://www.youtube.com/watch?v=sLjoLujEj3E
 
 export const AuthStack = () => {
+    const Auth = createNativeStackNavigator();
     return (
         <Auth.Navigator
             screenOptions={{

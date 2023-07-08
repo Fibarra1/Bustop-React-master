@@ -19,13 +19,13 @@ const RoutesScreen = () => {
     const API_URL = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Paradas';
 
     const [location, setLocation] = useState({
-        latitude: 0,
-        longitude: 0
+        latitude: 19.0437335,
+        longitude: -98.1980244
     });
 
     const [cambiolocalizacion, setCambiolocalizacion] = useState({
-        latitude: 0,
-        longitude: 0
+        latitude: 19.0437335,
+        longitude: -98.1980244
     })
 
     useEffect(() => {
@@ -59,8 +59,6 @@ const RoutesScreen = () => {
                 console.error(error);
             });
     }, []);
-
-
 
 
 
@@ -119,9 +117,10 @@ const RoutesScreen = () => {
                                     const latitude = item.latitud
                                     const longitude = item.longitud
                                     setCambiolocalizacion({ latitude, longitude })
+                                    setSeletedRoute({value: '', errorMessage: ''});
+                                    
                                 }}>
-                                    <Text onPress={() => {
-                                    }} style={{ color: 'black', fontSize: 20 }}>{item.nombre}
+                                    <Text style={{ color: 'black', fontSize: 20 }}>{item.nombre}
                                     </Text>
                                 </TouchableOpacity>
                             }
@@ -129,8 +128,8 @@ const RoutesScreen = () => {
                         />
                     </View>
 
-                }
-                <MapView
+                } 
+                <MapView 
                     style={styles.map}
                     region={{
                         latitude: cambiolocalizacion.latitude,
@@ -209,7 +208,7 @@ const styles = StyleSheet.create({
     map: {
         flex: 1,
         width: "100%",
-        height: 500
+        height: 410
     },
     flatListContainer: {
         position: 'absolute',

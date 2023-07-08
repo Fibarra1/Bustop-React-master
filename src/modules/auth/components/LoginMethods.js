@@ -25,7 +25,7 @@ const LoginMethods = ({ navigation }) => {
 
   const { t, i18n } = useTranslation();
 
-  const { loginWithGoogle } = useContextAuth()
+  const { loginWithGoogle, loginWithFacebook } = useContextAuth()
 
   const changeLanguage = value => {
     i18n.changeLanguage(value)
@@ -91,61 +91,61 @@ const LoginMethods = ({ navigation }) => {
   //   }
   // }
 
-  // const handleFacebookLogin = async () => {
-  //   // Solicita los permisos necesarios a través del LoginButton
-  //   LoginManager.logInWithPermissions(['public_profile', 'email']).then(
-  //     (result) => {
-  //       if (result.isCancelled) {
-  //         console.log('Inicio de sesión cancelado');
-  //       } else {
-  //         // Obtiene el token de acceso de Facebook
-  //         AccessToken.getCurrentAccessToken().then((data) => {
-  //           const facebookCredential = auth.FacebookAuthProvider.credential(
-  //             data.accessToken
-  //           );
+  const handleFacebookLogin = async () => {
+    // Solicita los permisos necesarios a través del LoginButton
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+      (result) => {
+        if (result.isCancelled) {
+          console.log('Inicio de sesión cancelado');
+        } else {
+          // Obtiene el token de acceso de Facebook
+          AccessToken.getCurrentAccessToken().then((data) => {
+            const facebookCredential = auth.FacebookAuthProvider.credential(
+              data.accessToken
+            );
 
-  //           // Inicia sesión en Firebase con las credenciales de Facebook
-  //           auth()
-  //             .signInWithCredential(facebookCredential)
-  //             .then((userCredential) => {
-  //               // El usuario ha iniciado sesión correctamente
-  //               const user = userCredential.user;
-  //               console.log('Usuario de Firebase:', user);
-  //             })
-  //             .catch((error) => {
-  //               console.log('Error al iniciar sesión:', error);
-  //             });
-  //         });
-  //       }
-  //     },
-  //     (error) => {
-  //       console.log('Error al iniciar sesión con Facebook:', error);
-  //     }
-  //   );
-  // };
+            // Inicia sesión en Firebase con las credenciales de Facebook
+            auth()
+              .signInWithCredential(facebookCredential)
+              .then((userCredential) => {
+                // El usuario ha iniciado sesión correctamente
+                const user = userCredential.user;
+                console.log('Usuario de Firebase:', user);
+              })
+              .catch((error) => {
+                console.log('Error al iniciar sesión:', error);
+              });
+          });
+        }
+      },
+      (error) => {
+        console.log('Error al iniciar sesión con Facebook:', error);
+      }
+    );
+  };
 
 
-  async function onFacebookButtonPress() {
-    // Attempt login with permissions
-    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  // async function onFacebookButtonPress() {
+  //   // Attempt login with permissions
+  //   const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
-    if (result.isCancelled) {
-      throw 'User cancelled the login process';
-    }
+  //   if (result.isCancelled) {
+  //     throw 'User cancelled the login process';
+  //   }
 
-    // Once signed in, get the users AccesToken
-    const data = await AccessToken.getCurrentAccessToken();
+  //   // Once signed in, get the users AccesToken
+  //   const data = await AccessToken.getCurrentAccessToken();
 
-    if (!data) {
-      throw 'Something went wrong obtaining access token';
-    }
+  //   if (!data) {
+  //     throw 'Something went wrong obtaining access token';
+  //   }
 
-    // Create a Firebase credential with the AccessToken
-    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+  //   // Create a Firebase credential with the AccessToken
+  //   const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(facebookCredential);
-  }
+  //   // Sign-in the user with the credential
+  //   return auth().signInWithCredential(facebookCredential);
+  // }
 
 
 
@@ -172,7 +172,7 @@ const LoginMethods = ({ navigation }) => {
           </Pressable>
           <Pressable style={[styles.btnLogins, styles.btnFacebook]}
 
-            onPress={() => onFacebookButtonPress()}
+            onPress={() => loginWithFacebook()}
 
           >
             <View style={styles.btnContenedor} >

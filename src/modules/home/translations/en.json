@@ -15,6 +15,10 @@
         "subtitle2": "App Settings",
         "placeholder": {
             "name": "Name",
+            "appa": "Paternal Last Name",
+            "apma": "Maternal Last Name",
+            "email": "Email",
+            "cel": "Cel",
             "password": "Current Password",
             "newPassword": "New Password",
             "confirmPassword": "Confirm Password"

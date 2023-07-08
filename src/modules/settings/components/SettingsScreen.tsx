@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import '../../home/translations/i18n';
 import { MainLayout } from '../../layout/components/MainLayout'
@@ -19,12 +19,20 @@ const languageOptions = [
 const SettingsScreen = () => {
     const [language, setLanguage] = useState('es')
     const { t, i18n } = useTranslation()
+    const [idUser, setIdUser] = useState({ value: '', errorMessage: '' })
+    const [token, setToken] = useState({ value: '', errorMessage: '' })
     const [name, setName] = useState({ value: '', errorMessage: '' })
+    const [apellidoPat, setApellidoPat] = useState({ value: '', errorMessage: '' })
+    const [apellidoMat, setApellidoMat] = useState({ value: '', errorMessage: '' })
+    const [correo, setCorreo] = useState({ value: '', errorMessage: '' })
+    const [celular, setCelular] = useState({ value: '', errorMessage: '' })
+    const [uidUser, setUidUser] = useState({ value: '', errorMessage: '' })
+    const [tipoUser, setTipoUser] = useState({ value: '', errorMessage: '' })
     const [currentPassword, setCurrentPassword] = useState({ value: '', errorMessage: '' })
     const [newPassword, setNewPassword] = useState({ value: '', errorMessage: '' })
     const [confirmPassword, setConfirmPassword] = useState({ value: '', errorMessage: '' })
 
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
 
     const userAuth = auth().currentUser;
@@ -90,44 +98,91 @@ const SettingsScreen = () => {
         resetPasswordInputs()
     }
 
+    const handleChangePassword = () => {
+
+        // Verificar que la contraseña nueva y la de confirmación coincidan
+        if (newPassword.value !== confirmPassword.value) {
+            Alert.alert('Error', 'Las contraseñas no coinciden');
+            return;
+        }
+
+        // Reautenticar al usuario con su contraseña actual
+        const credential = auth.EmailAuthProvider.credential(
+            user.usuario[0].correo,
+            currentPassword.value
+        );
+
+        console.log(credential)
+
+    };
+
+    
+
+
     const onChangeLanguage = () => {
         i18n.changeLanguage(language);
     }
 
 
     const onSingOff = () => {
-        logout()
         if (userAuth) {
-            logout
-            auth()
-                .signOut()
-                .then(() => console.log('Sesión cerrada correctamente.'))
-                .catch(error => console.error('Error al cerrar sesión:', error));
+          auth()
+            .signOut()
+            .then(() => console.log('Sesión cerrada correctamente.'))
+            .catch(error => console.error('Error al cerrar sesión:', error));
         }
-    }
+        logout(); // Llamar a logout solo una vez si es necesario
+      };
 
-    console.log(user)
+    useEffect(() => {
+        if (!userAuth) {
 
-    const uid = user.uid
+            setIdUser({ value: user.usuario[0].idUser, errorMessage: '' })
+            setToken({ value: user.token, errorMessage: '' })
+            setName({ value: user.usuario[0].nombre, errorMessage: '' })
+            setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' })
+            setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' })
+            setCorreo({ value: user.usuario[0].correo, errorMessage: '' })
+            setCelular({ value: user.usuario[0].telefono, errorMessage: '' })
+            setUidUser({ value: user.usuario[0].uid, errorMessage: '' })
+            setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' })
+        }
+
+    }, [])
+
+
 
 
     const editarNombreUsuario = async () => {
-        try {
-          const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Usuarios/${uid}`;
-          const datosActualizados = {
-            nombre: name.value
-          };
-          const response = await axios.put(url, datosActualizados);
-          
-          // Manejar la respuesta del servidor aquí
-          console.log('Nombre de usuario editado:', response.data.nombre);
-          
-          // Actualizar la interfaz de usuario con el nuevo nombre
-          // ...
-        } catch (error) {
-          console.error('Error al editar el nombre del usuario:', error);
+        if (!userAuth) {
+            try {
+                const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Usuarios/${user.usuario[0].idUser}`;
+                const datosActualizados = {
+                    idUser: user.usuario[0].idUser,
+                    nombre: name.value,
+                    apellidoPat: apellidoPat.value,
+                    apellidoMat: apellidoMat.value,
+                    correo: user.usuario[0].correo,
+                    telefono: celular.value,
+                    uid: user.usuario[0].uid,
+                    tipoUser: user.usuario[0].tipoUser
+                };
+                const response = await axios.put(url, datosActualizados, {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
+                });
+                // Manejar la respuesta del servidor aquí
+                console.log('Nombre de usuario editado:', response.data.nombre);
+
+                // Actualizar la interfaz de usuario con el nuevo nombre
+                // ...
+            } catch (error) {
+                console.error('Error al editar el nombre del usuario:', error.response.data);
+            }
         }
-      };
+    };
+
 
 
 
@@ -148,6 +203,21 @@ const SettingsScreen = () => {
                             placeholder={t('settings:placeholder:name')}
                             value={name.value}
                             onChangeText={(value) => setName({ ...name, value })} />
+                        <MyInput
+                            errorMessage={apellidoPat.errorMessage}
+                            placeholder={t('settings:placeholder:appa')}
+                            value={apellidoPat.value}
+                            onChangeText={(value) => setApellidoPat({ ...apellidoPat, value })} />
+                        <MyInput
+                            errorMessage={apellidoMat.errorMessage}
+                            placeholder={t('settings:placeholder:apma')}
+                            value={apellidoMat.value}
+                            onChangeText={(value) => setApellidoMat({ ...apellidoMat, value })} />
+                        <MyInput
+                            errorMessage={celular.errorMessage}
+                            placeholder={t('settings:placeholder:cel')}
+                            value={celular.value}
+                            onChangeText={(value) => setCelular({ ...celular, value })} />
                         <MyButton onPress={editarNombreUsuario} content={'Guardar'} />
 
                         <MyInput
@@ -165,7 +235,7 @@ const SettingsScreen = () => {
                             placeholder={t('settings:placeholder:confirmPassword')}
                             value={confirmPassword.value}
                             onChangeText={(value) => setConfirmPassword({ ...confirmPassword, value })} />
-                        <MyButton onPress={onChangePassword} content={'Guardar'} />
+                        <MyButton onPress={handleChangePassword} content={'Guardar'} />
                     </View>
                 }
 

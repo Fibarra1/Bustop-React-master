@@ -46,8 +46,8 @@
             "email": "Correo Electrónico",
             "cel": "Celular",
             "digit": "(10 Digitos)",
-            "password": "contraseña",
-            "reppassword":"repite la contraseña"
+            "password": "Contraseña",
+            "reppassword":"Repite la Contraseña"
         },
 
         "letterminos": "He leído y aceptado la ",

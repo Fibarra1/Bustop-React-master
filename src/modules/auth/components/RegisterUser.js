@@ -231,7 +231,7 @@ const RegisterUser = ({ navigation }) => {
                     />
                     {errorPass2 ? <Text style={styles.error}>{errorPass2}</Text> : null}
 
-                    <View style={styles.contenedorCheck}  >
+                    <View style={styles.contenedorCheck }  >
                         <CheckBox
                             color="#FFF" // Establece el color del checkbox cuando no está marcado
                             tintColors={{ true: '#368098' }}
@@ -239,7 +239,7 @@ const RegisterUser = ({ navigation }) => {
                             onValueChange={setChecked}
                         ></CheckBox>
 
-                        <Text style={[styles.texto, styles.textoCheck]} >{t('registeruser:letterminos')}</Text>
+                        <Text style={[styles.texto, styles.textoCheck ]} >{t('registeruser:letterminos')}</Text>
                         <Pressable style={styles.btnPoliticas} ><Text style={[styles.texto, styles.textoCheckLink]} >{t('registeruser:letterminoslink')}</Text></Pressable>
                     </View>
                     {errorCheck ? <Text style={styles.error}>{errorCheck}</Text> : null}
@@ -304,9 +304,10 @@ const styles = StyleSheet.create({
     },
 
     contenedorCheck: {
-        width: width1 * 0.9,
+        // width: width1 * 0.9,
         marginTop: height1 * 0.02,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        paddingRight: 9,
     },
 
     textoCheck: {

@@ -6,5 +6,6 @@ interface ContextProps {
     login: (user: GoogleUser) => void;
     logout: () => void;
     loginWithGoogle: () => void;
+    loginWithFacebook: () => void;
 }
 export const AuthContext = createContext<ContextProps>({} as ContextProps);

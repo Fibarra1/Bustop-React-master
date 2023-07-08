@@ -43,8 +43,8 @@
             "apma": "Maternal Last Name",
             "email": "Email",
             "cel": "Cel",
-            "password": "password",
-            "reppassword":"repeat password",
+            "password": "Password",
+            "reppassword":"Repeat Password",
             "digit": "(10 Digits)"
         },
 

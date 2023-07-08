@@ -15,11 +15,11 @@ import { RouteScreen } from "../modules/routes/components/RouteScreen";
 import auth from '@react-native-firebase/auth';
 
 
-const Tab = createBottomTabNavigator();
-const user = auth().currentUser;
 
 
 export const BottomTab = () => {
+    const Tab = createBottomTabNavigator();
+    const user = auth().currentUser;
     const { isPortrait } = useOrientation();
 
     const iconSize: number = useMemo(() => isPortrait ? 40 : 25, [isPortrait])

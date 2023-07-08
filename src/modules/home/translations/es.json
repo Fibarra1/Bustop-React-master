@@ -4,7 +4,7 @@
         "searchRoute": "Seleccionar ruta"
     },
     "selectRoute": {
-        "title1": "¿a dónde",
+        "title1": "¿A dónde",
         "title2": "quieres ir?",
         "origin": "Origen",
         "destiny": "Destino"
@@ -15,6 +15,10 @@
         "subtitle2": "Configuración de la aplicación",
         "placeholder": {
             "name": "Nombre",
+            "appa": "Apellido Paterno",
+            "apma": "Apellido Materno",
+            "email": "Correo Electrónico",
+            "cel": "Celular",
             "password": "Contraseña Actual",
             "newPassword": "Nueva Contraseña",
             "confirmPassword": "Confirmar contraseña"

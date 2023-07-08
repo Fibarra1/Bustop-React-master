@@ -95,9 +95,9 @@ const Login = ({ navigation }) => {
         const response = await postLogin(email.trim(), pass.toString().trim());
         if (response.status === 200) {
           console.log(response.data);
-          setUserID(response.data[0].uid) 
+          setUserID(response.data.usuario[0].uid) 
           console.log(response.status);
-          login(response.data[0])
+          login(response.data)
         }
         setIsLoading(false)
       } catch (error) {

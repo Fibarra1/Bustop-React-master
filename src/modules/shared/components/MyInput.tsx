@@ -21,7 +21,7 @@ export const MyInput: FC<Props> = ({ placeholder = '', value = '', errorMessage 
                 autoCapitalize='none'
                 value={value}
                 onChangeText={onChangeText}
-
+                onFocus={() => {}}
             />
             {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
         </View>
