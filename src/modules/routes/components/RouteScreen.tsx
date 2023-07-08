@@ -93,6 +93,7 @@ export const RouteScreen = () => {
                         strokeColor="black"
                         strokeWidth={3}
                     />
+                    
                 )}
                 
                 <Marker
