@@ -81,7 +81,6 @@ const SettingsScreen = () => {
         console.log('Inicio sesion con correo electronico')
     }
 
-    console.log(user)
 
 
 
@@ -142,22 +141,43 @@ const SettingsScreen = () => {
     }
 
     const handleChangePassword = () => {
-
-        // Verificar que la contraseña nueva y la de confirmación coincidan
-        if (newPassword.value !== confirmPassword.value) {
-            Alert.alert('Error', 'Las contraseñas no coinciden');
-            return;
+        const user = auth().currentUser;
+        
+        // Validar que los campos no estén vacíos
+        if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
+          Alert.alert('Error', 'Por favor, completa todos los campos.');
+          return;
         }
-
+    
+        // Validar que la nueva contraseña y la confirmación coincidan
+        if (newPassword.value !== confirmPassword.value) {
+          Alert.alert('Error', 'La nueva contraseña y la confirmación no coinciden.');
+          return;
+        }
+    
         // Reautenticar al usuario con su contraseña actual
-        const credential = auth.EmailAuthProvider.credential(
-            user.usuario[0].correo,
-            currentPassword.value
-        );
-
-        console.log(credential)
-
-    };
+        if(user){
+            const credential = auth.EmailAuthProvider.credential(user.email, currentPassword.value);
+            user.reauthenticateWithCredential(credential)
+              .then(() => {
+                // Cambiar la contraseña
+                user.updatePassword(newPassword.value)
+                  .then(() => {
+                    Alert.alert('Éxito', 'La contraseña se ha cambiado correctamente.');
+                    setCurrentPassword({value: '', errorMessage: ''});
+                    setNewPassword({value: '', errorMessage: ''});
+                    setConfirmPassword({value: '', errorMessage: ''});
+                  })
+                  .catch(error => {
+                    Alert.alert('Error', 'No se pudo cambiar la contraseña. Por favor, intenta nuevamente.');
+                  });
+              })
+              .catch(error => {
+                Alert.alert('Error', 'La contraseña actual es incorrecta. Por favor, verifica tus datos.');
+              });
+        }
+      };
+    
 
 
 
