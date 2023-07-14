@@ -27,6 +27,8 @@ export const RouteScreen = () => {
             longitude: -110.3317876,
         },
     ]
+    const { t } = useTranslation();
+
 
     const api_Directions = 'AIzaSyB9DcIvaDukFT5D8a4S7zbDlm_dismNVG8'
 
@@ -85,7 +87,7 @@ export const RouteScreen = () => {
             <View>
                 <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
             </View>
-            <Text style={styles.title}>{"Ruta"}</Text>
+            <Text style={styles.title}>{t('route:title')}</Text>
 
             <View style={styles.rowRoutes}>
                 <SquareRoute contentColor='red' bgColor='orange' content='10' />

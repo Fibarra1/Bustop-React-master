@@ -3,6 +3,9 @@
         "title": "Rutas",
         "searchRoute": "Seleccionar ruta"
     },
+    "route": {
+        "title": "Ruta"
+    },
     "selectRoute": {
         "title1": "¿A dónde",
         "title2": "quieres ir?",

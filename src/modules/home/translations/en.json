@@ -3,8 +3,11 @@
         "title": "Routes",
         "searchRoute": "Select Route"
     },
+    "route": {
+        "title": "Route"
+    },
     "selectRoute": {
-        "title1": "where do you",
+        "title1": "Where do you",
         "title2": "want to go?",
         "origin": "Origin",
         "destiny": "Destiny"
