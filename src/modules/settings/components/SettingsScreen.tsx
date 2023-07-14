@@ -177,20 +177,21 @@ const SettingsScreen = () => {
         logout(); // Llamar a logout solo una vez si es necesario
     };
 
-    const setDatos = () => {
 
-        setIdUser({ value: user.usuario[0].idUser, errorMessage: '' })
-        setToken({ value: user.token, errorMessage: '' })
-        setName({ value: user.usuario[0].nombre, errorMessage: '' })
-        setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' })
-        setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' })
-        setCorreo({ value: user.usuario[0].correo, errorMessage: '' })
-        setCelular({ value: user.usuario[0].telefono, errorMessage: '' })
-        setUidUser({ value: user.usuario[0].uid, errorMessage: '' })
-        setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' })
-    }
+    useEffect(() => {
+        if (user) {
+            setIdUser({ value: user.usuario[0].idUser, errorMessage: '' });
+            setToken({ value: user.token, errorMessage: '' });
+            setName({ value: user.usuario[0].nombre, errorMessage: '' });
+            setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' });
+            setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' });
+            setCorreo({ value: user.usuario[0].correo, errorMessage: '' });
+            setCelular({ value: user.usuario[0].telefono, errorMessage: '' });
+            setUidUser({ value: user.usuario[0].uid, errorMessage: '' });
+            setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' });
+        }
+    }, [user]);
 
-    setDatos();
 
 
 
