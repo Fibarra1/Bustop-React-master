@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, Alert } from 'react-native'
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, Alert, Image } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 
 //importando el translate
@@ -40,6 +40,10 @@ const RegisterUser = ({ navigation }) => {
     const [errorCheck, setErrorCheck] = useState('');
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+    const [showPassword2, setShowPassword2] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+
 
     const validFormRegister = () => {
 
@@ -104,6 +108,15 @@ const RegisterUser = ({ navigation }) => {
         setPass1('');
         setPass2('');
         setChecked(false)
+    }
+
+    const togglePassword = () => {
+        setShowPassword(!showPassword)
+        console.log(showPassword)
+    }
+    const togglePassword2 = () => {
+        setShowPassword2(!showPassword2)
+        console.log(showPassword2)
     }
 
     const sendFormRegist = async () => {
@@ -211,27 +224,81 @@ const RegisterUser = ({ navigation }) => {
                     />
                     {errorCel ? <Text style={styles.error}>{errorCel}</Text> : null}
 
-                    <TextInput
+                    <View style={[styles.contentPass, styles.contentPass2]} >
+
+                        <TextInput style={styles.inputPass}
+                            placeholderTextColor='#FFF'
+                            placeholder={t('registeruser:holders:password')}
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            secureTextEntry={showPassword}
+                            value={pass1}
+                            onChangeText={setPass1}
+                        />
+
+                        <Pressable style={styles.btnShowPass}
+                            onPress={() => {
+                                togglePassword()
+                                console.log('clic')
+                            }} >
+                            {!showPassword ? (<Image style={styles.iconEye}
+                                source={require('../../auth/icons/eye.png')}
+                            />) :
+                                <Image style={styles.iconEye}
+                                    source={require('../../auth/icons/eye-of.png')}
+                                />
+                            }
+                        </Pressable>
+                    </View>
+
+                    {/* <TextInput
                         placeholder={t('registeruser:holders:password')}
                         placeholderTextColor='#FFF'
                         style={styles.input}
                         value={pass1}
                         onChangeText={setPass1}
 
-                    />
+                    /> */}
                     {errorPass1 ? <Text style={styles.error}>{errorPass1}</Text> : null}
 
-                    <TextInput
+                    <View style={[styles.contentPass, styles.contentPass2]} >
+
+                        <TextInput style={styles.inputPass}
+                            placeholderTextColor='#FFF'
+                            placeholder={t('registeruser:holders:reppassword')}
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            secureTextEntry={showPassword2}
+                            value={pass2}
+                            onChangeText={setPass2}
+                        />
+
+                        <Pressable style={styles.btnShowPass}
+                            onPress={() => {
+                                togglePassword2()
+                                console.log('clic')
+                            }} >
+                            {!showPassword2 ? (<Image style={styles.iconEye}
+                                source={require('../../auth/icons/eye.png')}
+                            />) :
+                                <Image style={styles.iconEye}
+                                    source={require('../../auth/icons/eye-of.png')}
+                                />
+                            }
+                        </Pressable>
+                    </View>
+
+                    {/* <TextInput
                         placeholder={t('registeruser:holders:reppassword')}
                         placeholderTextColor='#FFF'
                         style={styles.input}
                         value={pass2}
                         onChangeText={setPass2}
 
-                    />
+                    /> */}
                     {errorPass2 ? <Text style={styles.error}>{errorPass2}</Text> : null}
 
-                    <View style={styles.contenedorCheck }  >
+                    <View style={styles.contenedorCheck}  >
                         <CheckBox
                             color="#FFF" // Establece el color del checkbox cuando no está marcado
                             tintColors={{ true: '#368098' }}
@@ -239,7 +306,7 @@ const RegisterUser = ({ navigation }) => {
                             onValueChange={setChecked}
                         ></CheckBox>
 
-                        <Text style={[styles.texto, styles.textoCheck ]} >{t('registeruser:letterminos')}</Text>
+                        <Text style={[styles.texto, styles.textoCheck]} >{t('registeruser:letterminos')}</Text>
                         <Pressable style={styles.btnPoliticas} ><Text style={[styles.texto, styles.textoCheckLink]} >{t('registeruser:letterminoslink')}</Text></Pressable>
                     </View>
                     {errorCheck ? <Text style={styles.error}>{errorCheck}</Text> : null}
@@ -350,6 +417,36 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: -10,
         textAlign: 'center'
+    },
+    contentPass: {
+        flexDirection: 'row'
+    },
+
+    contentPass2: {
+        width: width1 * 0.8,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 4,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 5,
+        fontSize: height1 * 0.025,
+        color: '#FFF',
+        marginTop: height1 * 0.04
+
+    },
+    inputPass: {
+        flex: 12,
+        fontSize: height1 * 0.025,
+        color: '#FFF',
+    },
+    iconEye: {
+        height: 30,
+        width: 30,
+    },
+
+    btnShowPass: {
+        flex: 1,
+        marginTop: 5
     },
 })
 

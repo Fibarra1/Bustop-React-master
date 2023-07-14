@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { Text, StyleSheet, View, Alert } from 'react-native';
+import { Text, StyleSheet, View, Alert, TextInput, Pressable, Dimensions, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import '../../home/translations/i18n';
 import { MainLayout } from '../../layout/components/MainLayout'
@@ -9,6 +9,10 @@ import { MyPicker } from '../../shared/components/MyPicker';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
+
+var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
+var width1 = Dimensions.get("window").width;
+
 
 
 const languageOptions = [
@@ -32,6 +36,10 @@ const SettingsScreen = () => {
     const [newPassword, setNewPassword] = useState({ value: '', errorMessage: '' })
     const [confirmPassword, setConfirmPassword] = useState({ value: '', errorMessage: '' })
     const [lastSignInProvider, setLastSignInProvider] = useState('');
+    const [showPassword, setShowPassword] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+    const [showPassword2, setShowPassword2] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+    const [showPassword3, setShowPassword3] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+
 
     const { user } = useContext(AuthContext)
 
@@ -77,9 +85,9 @@ const SettingsScreen = () => {
         fetchLastSignInProvider();
     }, []);
 
-    if (lastSignInProvider === 'password') {
-        console.log('Inicio sesion con correo electronico')
-    }
+    // if (lastSignInProvider === 'password') {
+    //     console.log('Inicio sesion con correo electronico')
+    // }
 
 
 
@@ -121,6 +129,19 @@ const SettingsScreen = () => {
         return true
     }
 
+    const togglePassword = () => {
+        setShowPassword(!showPassword)
+        console.log(showPassword)
+      }
+    const togglePassword2 = () => {
+        setShowPassword2(!showPassword2)
+        console.log(showPassword2)
+      }
+    const togglePassword3 = () => {
+        setShowPassword3(!showPassword3)
+        console.log(showPassword3)
+      }
+
     const onChangeName = () => {
         if (!name.value) {
             setName({ ...name, errorMessage: t('settings:errorMessage:requiredName') })
@@ -142,42 +163,42 @@ const SettingsScreen = () => {
 
     const handleChangePassword = () => {
         const user = auth().currentUser;
-        
+
         // Validar que los campos no estén vacíos
         if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
-          Alert.alert('Error', 'Por favor, completa todos los campos.');
-          return;
+            Alert.alert('Error', 'Por favor, completa todos los campos.');
+            return;
         }
-    
+
         // Validar que la nueva contraseña y la confirmación coincidan
         if (newPassword.value !== confirmPassword.value) {
-          Alert.alert('Error', 'La nueva contraseña y la confirmación no coinciden.');
-          return;
+            Alert.alert('Error', 'La nueva contraseña y la confirmación no coinciden.');
+            return;
         }
-    
+
         // Reautenticar al usuario con su contraseña actual
-        if(user){
+        if (user) {
             const credential = auth.EmailAuthProvider.credential(user.email, currentPassword.value);
             user.reauthenticateWithCredential(credential)
-              .then(() => {
-                // Cambiar la contraseña
-                user.updatePassword(newPassword.value)
-                  .then(() => {
-                    Alert.alert('Éxito', 'La contraseña se ha cambiado correctamente.');
-                    setCurrentPassword({value: '', errorMessage: ''});
-                    setNewPassword({value: '', errorMessage: ''});
-                    setConfirmPassword({value: '', errorMessage: ''});
-                  })
-                  .catch(error => {
-                    Alert.alert('Error', 'No se pudo cambiar la contraseña. Por favor, intenta nuevamente.');
-                  });
-              })
-              .catch(error => {
-                Alert.alert('Error', 'La contraseña actual es incorrecta. Por favor, verifica tus datos.');
-              });
+                .then(() => {
+                    // Cambiar la contraseña
+                    user.updatePassword(newPassword.value)
+                        .then(() => {
+                            Alert.alert('Éxito', 'La contraseña se ha cambiado correctamente.');
+                            setCurrentPassword({ value: '', errorMessage: '' });
+                            setNewPassword({ value: '', errorMessage: '' });
+                            setConfirmPassword({ value: '', errorMessage: '' });
+                        })
+                        .catch(error => {
+                            Alert.alert('Error', 'No se pudo cambiar la contraseña. Por favor, intenta nuevamente.');
+                        });
+                })
+                .catch(error => {
+                    Alert.alert('Error', 'La contraseña actual es incorrecta. Por favor, verifica tus datos.');
+                });
         }
-      };
-    
+    };
+
 
 
 
@@ -200,15 +221,15 @@ const SettingsScreen = () => {
 
     useEffect(() => {
         if (user) {
-            setIdUser({ value: user.usuario[0].idUser, errorMessage: '' });
-            setToken({ value: user.token, errorMessage: '' });
-            setName({ value: user.usuario[0].nombre, errorMessage: '' });
-            setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' });
-            setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' });
-            setCorreo({ value: user.usuario[0].correo, errorMessage: '' });
-            setCelular({ value: user.usuario[0].telefono, errorMessage: '' });
-            setUidUser({ value: user.usuario[0].uid, errorMessage: '' });
-            setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' });
+            setIdUser({ value: user.usuario[0]?.idUser || '', errorMessage: '' });
+            setToken({ value: user.token || '', errorMessage: '' });
+            setName({ value: user.usuario[0]?.nombre || '', errorMessage: '' });
+            setApellidoPat({ value: user.usuario[0]?.apellidoPat || '', errorMessage: '' });
+            setApellidoMat({ value: user.usuario[0]?.apellidoMat || '', errorMessage: '' });
+            setCorreo({ value: user.usuario[0]?.correo || '', errorMessage: '' });
+            setCelular({ value: user.usuario[0]?.telefono || '', errorMessage: '' });
+            setUidUser({ value: user.usuario[0]?.uid || '', errorMessage: '' });
+            setTipoUser({ value: user.usuario[0]?.tipoUser || '', errorMessage: '' });
         }
     }, [user]);
 
@@ -238,7 +259,7 @@ const SettingsScreen = () => {
                         Authorization: `Bearer ${user.token}`
                     }
                 });
-                // Manejar la respuesta del servidor aquí
+                Alert.alert('Éxito', 'Los datos se han actualizado correctamente.');
                 console.log('Nombre de usuario editado:', response.data.nombre);
 
                 // Actualizar la interfaz de usuario con el nuevo nombre
@@ -286,21 +307,86 @@ const SettingsScreen = () => {
                             onChangeText={(value) => setCelular({ ...celular, value })} />
                         <MyButton onPress={editarNombreUsuario} content={'Guardar'} />
 
-                        <MyInput
-                            errorMessage={currentPassword.errorMessage}
-                            placeholder={t('settings:placeholder:password')}
-                            value={currentPassword.value}
-                            onChangeText={(value) => setCurrentPassword({ ...currentPassword, value })} />
-                        <MyInput
-                            errorMessage={newPassword.errorMessage}
-                            placeholder={t('settings:placeholder:newPassword')}
-                            value={newPassword.value}
-                            onChangeText={(value) => setNewPassword({ ...newPassword, value })} />
-                        <MyInput
-                            errorMessage={confirmPassword.errorMessage}
-                            placeholder={t('settings:placeholder:confirmPassword')}
-                            value={confirmPassword.value}
-                            onChangeText={(value) => setConfirmPassword({ ...confirmPassword, value })} />
+                        
+                        <View style={[styles.contentPass, styles.contentPass2]} >
+
+                            <TextInput style={styles.inputPass}
+                                placeholderTextColor='#FFF'
+                                placeholder={t('settings:placeholder:password')}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                secureTextEntry={showPassword}
+                                value={currentPassword.value}
+                                onChangeText={(value) => setCurrentPassword({ ...currentPassword, value })}
+                            />
+
+                            <Pressable style={styles.btnShowPass}
+                                onPress={() => {
+                                    togglePassword()
+                                    console.log('clic')
+                                }} >
+                                {!showPassword ? (<Image style={styles.iconEye}
+                                    source={require('../../auth/icons/eye.png')}
+                                />) :
+                                    <Image style={styles.iconEye}
+                                        source={require('../../auth/icons/eye-of.png')}
+                                    />
+                                }
+                            </Pressable>
+                        </View>
+                        <View style={[styles.contentPass, styles.contentPass2]} >
+
+                            <TextInput style={styles.inputPass}
+                                placeholderTextColor='#FFF'
+                                placeholder={t('settings:placeholder:newPassword')}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                secureTextEntry={showPassword2}
+                                value={newPassword.value}
+                                onChangeText={(value) => setNewPassword({ ...currentPassword, value })}
+                            />
+
+                            <Pressable style={styles.btnShowPass}
+                                onPress={() => {
+                                    togglePassword2()
+                                    console.log('clic')
+                                }} >
+                                {!showPassword2 ? (<Image style={styles.iconEye}
+                                    source={require('../../auth/icons/eye.png')}
+                                />) :
+                                    <Image style={styles.iconEye}
+                                        source={require('../../auth/icons/eye-of.png')}
+                                    />
+                                }
+                            </Pressable>
+                        </View>
+                        
+                        <View style={[styles.contentPass, styles.contentPass2]} >
+
+                            <TextInput style={styles.inputPass}
+                                placeholderTextColor='#FFF'
+                                placeholder={t('settings:placeholder:confirmPassword')}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                secureTextEntry={showPassword3}
+                                value={confirmPassword.value}
+                                onChangeText={(value) => setConfirmPassword({ ...currentPassword, value })}
+                            />
+
+                            <Pressable style={styles.btnShowPass}
+                                onPress={() => {
+                                    togglePassword3()
+                                    console.log('clic')
+                                }} >
+                                {!showPassword3 ? (<Image style={styles.iconEye}
+                                    source={require('../../auth/icons/eye.png')}
+                                />) :
+                                    <Image style={styles.iconEye}
+                                        source={require('../../auth/icons/eye-of.png')}
+                                    />
+                                }
+                            </Pressable>
+                        </View>
                         <MyButton onPress={handleChangePassword} content={'Guardar'} />
                     </View>
                 }
@@ -340,7 +426,36 @@ const styles = StyleSheet.create({
         height: 1,
         width: '100%',
         backgroundColor: 'red',
-    }
+    },
+    inputPass: {
+        flex: 12,
+        fontSize: height1 * 0.025,
+        color: '#FFF',
+    },
+    iconEye: {
+        height: 30,
+        width: 30,
+    },
+
+    btnShowPass: {
+        flex: 1,
+        marginTop: 5
+    },
+    contentPass: {
+        flexDirection: 'row'
+    },
+
+    contentPass2: {
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 4,
+        fontSize: 25,
+        color: '#FFF',
+        marginTop: 30,
+        paddingVertical: 10,
+    },
 })
 
 export default SettingsScreen
