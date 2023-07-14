@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { postLogin, getLogin } from '../services/AuthServices'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../../../context/auth';
+import auth from '@react-native-firebase/auth';
+
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
@@ -26,7 +28,7 @@ const Login = ({ navigation }) => {
   const [userID, setUserID] = useState();
 
 
-  const { login } = useContext(AuthContext)
+  const { loginWithEmail, login } = useContext(AuthContext)
   /* AQI ES UN EJEMPLO DE COMO LLAMR A MS METODOS 
   DE AXIOS PARA EL API */
   /*  useEffect(() => {
@@ -108,6 +110,8 @@ const Login = ({ navigation }) => {
     }
   }
 
+  
+
    
 
   return (
@@ -177,6 +181,7 @@ const Login = ({ navigation }) => {
 
           <Pressable style={styles.btnInitSesion}
             onPress={() => {
+              loginWithEmail(email, pass);
               sendLogin()
             }}
           >

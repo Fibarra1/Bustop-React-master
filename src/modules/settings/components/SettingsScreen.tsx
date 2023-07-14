@@ -31,15 +31,58 @@ const SettingsScreen = () => {
     const [currentPassword, setCurrentPassword] = useState({ value: '', errorMessage: '' })
     const [newPassword, setNewPassword] = useState({ value: '', errorMessage: '' })
     const [confirmPassword, setConfirmPassword] = useState({ value: '', errorMessage: '' })
+    const [lastSignInProvider, setLastSignInProvider] = useState('');
 
     const { user } = useContext(AuthContext)
 
+    const { logout } = useContext(AuthContext)
 
     const userAuth = auth().currentUser;
 
+    // const checkLoginMethod = () => {
+    //     const user = auth().currentUser;
+    //     if (user) {
+    //       user.providerData.forEach((userInfo) => {
+    //         if (userInfo.providerId === 'facebook.com') {
+    //           console.log('El usuario inició sesión con Facebook');
+    //         } else if (userInfo.providerId === 'google.com') {
+    //           console.log('El usuario inició sesión con Google');
+    //         } else if (userInfo.providerId === 'password') {
+    //           console.log('El usuario inició sesión con correo electrónico y contraseña');
+    //         }
+    //       });
+    //     } else {
+    //       console.log('No se ha iniciado sesión');
+    //     }
+    //   };
+
+    //   checkLoginMethod()
 
 
-    const { logout } = useContext(AuthContext)
+    useEffect(() => {
+        const fetchLastSignInProvider = async () => {
+            try {
+                const user = auth().currentUser;
+                if (user) {
+                    const signInMethods = await auth().fetchSignInMethodsForEmail(user.email);
+                    if (signInMethods.length > 0) {
+                        setLastSignInProvider(signInMethods[0]);
+                    }
+                }
+            } catch (error) {
+                console.log('Error al obtener el proveedor de inicio de sesión:', error);
+            }
+        };
+
+        fetchLastSignInProvider();
+    }, []);
+
+    if (lastSignInProvider === 'password') {
+        console.log('Inicio sesion con correo electronico')
+    }
+
+    console.log(user)
+
 
 
 
@@ -116,7 +159,7 @@ const SettingsScreen = () => {
 
     };
 
-    
+
 
 
     const onChangeLanguage = () => {
@@ -126,35 +169,37 @@ const SettingsScreen = () => {
 
     const onSingOff = () => {
         if (userAuth) {
-          auth()
-            .signOut()
-            .then(() => console.log('Sesión cerrada correctamente.'))
-            .catch(error => console.error('Error al cerrar sesión:', error));
+            auth()
+                .signOut()
+                .then(() => console.log('Sesión cerrada correctamente.'))
+                .catch(error => console.error('Error al cerrar sesión:', error));
         }
         logout(); // Llamar a logout solo una vez si es necesario
-      };
+    };
 
-    useEffect(() => {
-        if (!userAuth) {
+    const setDatos = () => {
 
-            setIdUser({ value: user.usuario[0].idUser, errorMessage: '' })
-            setToken({ value: user.token, errorMessage: '' })
-            setName({ value: user.usuario[0].nombre, errorMessage: '' })
-            setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' })
-            setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' })
-            setCorreo({ value: user.usuario[0].correo, errorMessage: '' })
-            setCelular({ value: user.usuario[0].telefono, errorMessage: '' })
-            setUidUser({ value: user.usuario[0].uid, errorMessage: '' })
-            setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' })
-        }
+        setIdUser({ value: user.usuario[0].idUser, errorMessage: '' })
+        setToken({ value: user.token, errorMessage: '' })
+        setName({ value: user.usuario[0].nombre, errorMessage: '' })
+        setApellidoPat({ value: user.usuario[0].apellidoPat, errorMessage: '' })
+        setApellidoMat({ value: user.usuario[0].apellidoMat, errorMessage: '' })
+        setCorreo({ value: user.usuario[0].correo, errorMessage: '' })
+        setCelular({ value: user.usuario[0].telefono, errorMessage: '' })
+        setUidUser({ value: user.usuario[0].uid, errorMessage: '' })
+        setTipoUser({ value: user.usuario[0].tipoUser, errorMessage: '' })
+    }
 
-    }, [])
+    setDatos();
+
+
 
 
 
 
     const editarNombreUsuario = async () => {
-        if (!userAuth) {
+        if (user) {
+
             try {
                 const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Usuarios/${user.usuario[0].idUser}`;
                 const datosActualizados = {
@@ -193,7 +238,7 @@ const SettingsScreen = () => {
             <Text style={styles.title}>{t('settings:title')}</Text>
             <View style={styles.settingsContainer} >
 
-                {!userAuth &&
+                {lastSignInProvider === 'password' &&
 
 
                     <View>

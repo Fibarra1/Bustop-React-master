@@ -26,7 +26,7 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 
 
-    const login = (user: User | UserFromGoogle | FirebaseAuthTypes.UserCredential) => {
+    const login = (user) => {
         dispatch({
             type: '[Auth] - Login',
             payload: user,
@@ -48,7 +48,10 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
             //Sign-in the user with the credential
-            const user = await auth().signInWithCredential(googleCredential);
+            const userCredential = await auth().signInWithCredential(googleCredential);
+
+            const user = userCredential.user;
+            
             login(user);
         } catch (error) {
             console.log('[desde loginWithGoogle]', error)
@@ -87,6 +90,21 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
         }
       }
 
+      const loginWithEmail = (email, password) => {
+        auth()
+          .signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // El usuario ha iniciado sesión exitosamente
+            const user = userCredential.user;
+            console.log('Usuario autenticado:', user.uid);
+            login(user);
+          })
+          .catch((error) => {
+            // Hubo un error durante la autenticación
+            console.log('Error al iniciar sesión:', error);
+          });
+      };
+
     
 
 
@@ -99,7 +117,8 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
                 login,
                 logout,
                 loginWithGoogle,
-                loginWithFacebook
+                loginWithFacebook,
+                loginWithEmail
             }}
         >
             {children}

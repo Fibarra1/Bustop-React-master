@@ -3,9 +3,10 @@ import { GoogleUser } from '../../interfaces/user.interface';
 
 interface ContextProps {
     user: GoogleUser | null;
-    login: (user: GoogleUser) => void;
+    login: () => void;
     logout: () => void;
     loginWithGoogle: () => void;
     loginWithFacebook: () => void;
+    loginWithEmail: () => void;
 }
 export const AuthContext = createContext<ContextProps>({} as ContextProps);

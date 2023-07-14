@@ -90,6 +90,7 @@ const RoutesScreen = () => {
 
 
 
+
     return (
 
 
@@ -148,8 +149,8 @@ const RoutesScreen = () => {
                         <Marker
                             key={idParada}
                             coordinate={{
-                                latitude: latitud,
-                                longitude: longitud
+                                latitude: parseFloat(latitud),
+                                longitude: parseFloat(longitud)
                             }}
                             title={nombre}
                             pinColor='#74cfe6'

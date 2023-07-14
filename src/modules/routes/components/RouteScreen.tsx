@@ -9,9 +9,26 @@ import MapView, { Marker, Polygon, Polyline } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 import axios from 'axios';
+import MapViewDirections from 'react-native-maps-directions';
 
 
 export const RouteScreen = () => {
+
+    const origin = { latitude: 19.03, longitude: -98.20 };
+    const destination = { latitude: 23.03, longitude: -110.20 };
+
+    const coordinates = [
+        {
+            latitude: 19.3317876,
+            longitude: -98.3317876,
+        },
+        {
+            latitude: 23.3317876,
+            longitude: -110.3317876,
+        },
+    ]
+
+    const api_Directions = 'AIzaSyB9DcIvaDukFT5D8a4S7zbDlm_dismNVG8'
 
     const API_URL = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Paradas';
     const API_URL_Rutas = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/CordenadaRutas';
@@ -44,27 +61,23 @@ export const RouteScreen = () => {
             .catch(error => {
                 console.error(error);
             });
-        }, []);
-        const [routeCoordinates, setRouteCoordinates] = useState([]);
-    
-        
-        
+    }, []);
+    const [routeCoordinates, setRouteCoordinates] = useState([]);
+
+
+
     useEffect(() => {
-        fetch('https://beautiful-mendel.68-168-208-58.plesk.page/api/CordenadaRutas')
-          .then(response => response.json())
-          .then(data => {
-            const coordinates = data
-              .slice(0, 5) // Limitar a los primeros 5 elementos del arreglo
-              .map(item => ({
-                latitude: parseFloat(item.latitud) || 0,
-                longitude: parseFloat(item.longitud) || 0,
-              }));
-            setRouteCoordinates(coordinates);
-          })
-          .catch(error => {
-            console.error('Error al obtener las rutas:', error);
-          });
-      }, []);
+        axios.get(API_URL_Rutas)
+            .then(response => {
+                setRouteCoordinates(response.data);
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
+    // console.log(routeCoordinates.map(coordinate => ({ latitude: coordinate.latitud, longitude: coordinate.longitud })));
 
 
     return (
@@ -87,15 +100,18 @@ export const RouteScreen = () => {
                     longitudeDelta: 0.051,
                 }}
             >
-                {routeCoordinates.length > 0 && (
-                    <Polyline
-                        coordinates={routeCoordinates}
-                        strokeColor="black"
-                        strokeWidth={3}
-                    />
-                    
-                )}
-                
+                {/* {routeCoordinates.map(({ nombre, longitud, latitud, idCordenada }, index) => ( */}
+
+                {/* <MapViewDirections
+                    origin={coordinates[0]} // Latitud y longitud del origen
+                    destination={coordinates[1]}
+                    apikey={api_Directions}
+                    strokeWidth={3}
+                    strokeColor="black"
+                /> */}
+
+                {/* ))} */}
+
                 <Marker
                     coordinate={{ latitude: position.latitude, longitude: position.longitude }}
                     title={"Tu ubicación"}
@@ -105,8 +121,8 @@ export const RouteScreen = () => {
                     <Marker
                         key={idParada}
                         coordinate={{
-                            latitude: latitud,
-                            longitude: longitud
+                            latitude: parseFloat(latitud),
+                            longitude: parseFloat(longitud)
                         }}
                         title={nombre}
                         pinColor='#74cfe6'
