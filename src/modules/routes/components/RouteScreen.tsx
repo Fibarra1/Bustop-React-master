@@ -102,17 +102,20 @@ export const RouteScreen = () => {
                     longitudeDelta: 0.051,
                 }}
             >
-                {/* {routeCoordinates.map(({ nombre, longitud, latitud, idCordenada }, index) => ( */}
+                {/* {routeCoordinates.map(({ nombre, longitud, latitud, idCordenada }, index) => (
+                    
+                    latitud !== 'string' && longitud !== 'string' ?
 
-                {/* <MapViewDirections
-                    origin={coordinates[0]} // Latitud y longitud del origen
-                    destination={coordinates[1]}
+                <MapViewDirections
+                    origin={{latitude: parseFloat(latitud), longitude: parseFloat(longitud)}} // Latitud y longitud del origen
+                    destination={coordinates[index+1]}
                     apikey={api_Directions}
                     strokeWidth={3}
                     strokeColor="black"
-                /> */}
+                />
+                : null
 
-                {/* ))} */}
+                ))} */}
 
                 <Marker
                     coordinate={{ latitude: position.latitude, longitude: position.longitude }}

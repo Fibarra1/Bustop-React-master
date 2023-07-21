@@ -1,10 +1,11 @@
-import { FC, type ReactNode, useReducer, useContext } from 'react';
+import { FC, type ReactNode, useReducer, useContext, } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { AuthContext, authReducer } from './';
 import type { User } from '../../interfaces/user.interface';
 import type { UserFromGoogle } from '../../interfaces/google_user.interface';
 import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
+import {Alert} from 'react-native'
 
 export interface AuthStateProps {
     user: User | UserFromGoogle | FirebaseAuthTypes.UserCredential | null;
@@ -101,6 +102,7 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
           })
           .catch((error) => {
             // Hubo un error durante la autenticación
+            Alert.alert('Error al Iniciar Sesión', 'El correo electrónico o contraseña que ingresaste es incorrecto. Por favor, intenta nuevamente.');
             console.log('Error al iniciar sesión:', error);
           });
       };

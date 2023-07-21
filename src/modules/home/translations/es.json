@@ -1,7 +1,7 @@
 {
     "routes": {
         "title": "Rutas",
-        "searchRoute": "Seleccionar ruta"
+        "searchRoute": "Seleccionar Ruta"
     },
     "route": {
         "title": "Ruta"

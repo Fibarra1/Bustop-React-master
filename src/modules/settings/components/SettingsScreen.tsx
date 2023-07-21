@@ -9,6 +9,7 @@ import { MyPicker } from '../../shared/components/MyPicker';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
@@ -47,6 +48,7 @@ const SettingsScreen = () => {
 
     const userAuth = auth().currentUser;
 
+    const navigation = useNavigation();
     // const checkLoginMethod = () => {
     //     const user = auth().currentUser;
     //     if (user) {
@@ -132,15 +134,15 @@ const SettingsScreen = () => {
     const togglePassword = () => {
         setShowPassword(!showPassword)
         console.log(showPassword)
-      }
+    }
     const togglePassword2 = () => {
         setShowPassword2(!showPassword2)
         console.log(showPassword2)
-      }
+    }
     const togglePassword3 = () => {
         setShowPassword3(!showPassword3)
         console.log(showPassword3)
-      }
+    }
 
     const onChangeName = () => {
         if (!name.value) {
@@ -208,9 +210,9 @@ const SettingsScreen = () => {
     }
 
 
-    const onSingOff = () => {
+    const onSingOff = async () => {
         if (userAuth) {
-            auth()
+           await auth()
                 .signOut()
                 .then(() => console.log('Sesión cerrada correctamente.'))
                 .catch(error => console.error('Error al cerrar sesión:', error));
@@ -220,18 +222,26 @@ const SettingsScreen = () => {
 
 
     useEffect(() => {
-        if (user) {
-            setIdUser({ value: user.usuario[0]?.idUser || '', errorMessage: '' });
-            setToken({ value: user.token || '', errorMessage: '' });
-            setName({ value: user.usuario[0]?.nombre || '', errorMessage: '' });
-            setApellidoPat({ value: user.usuario[0]?.apellidoPat || '', errorMessage: '' });
-            setApellidoMat({ value: user.usuario[0]?.apellidoMat || '', errorMessage: '' });
-            setCorreo({ value: user.usuario[0]?.correo || '', errorMessage: '' });
-            setCelular({ value: user.usuario[0]?.telefono || '', errorMessage: '' });
-            setUidUser({ value: user.usuario[0]?.uid || '', errorMessage: '' });
-            setTipoUser({ value: user.usuario[0]?.tipoUser || '', errorMessage: '' });
+        if (lastSignInProvider === 'password' && user && Array.isArray(user.usuario)) {
+          // Filtramos el arreglo para obtener el primer elemento que no sea undefined
+          const validUser = user.usuario.find((u) => u !== undefined);
+      
+          if (validUser) {
+            console.log(validUser)
+            // Si encontramos un elemento válido, actualizamos el estado con sus propiedades
+            setIdUser({ value: validUser.idUser || '', errorMessage: '' });
+            setName({ value: validUser.nombre || '', errorMessage: '' });
+            setApellidoPat({ value: validUser.apellidoPat || '', errorMessage: '' });
+            setApellidoMat({ value: validUser.apellidoMat || '', errorMessage: '' });
+            setCorreo({ value: validUser.correo || '', errorMessage: '' });
+            setCelular({ value: validUser.telefono || '', errorMessage: '' });
+            setUidUser({ value: validUser.uid || '', errorMessage: '' });
+            setTipoUser({ value: validUser.tipoUser || '', errorMessage: '' });
+          }
         }
-    }, [user]);
+      }, [lastSignInProvider, user]);
+
+
 
 
 
@@ -307,7 +317,7 @@ const SettingsScreen = () => {
                             onChangeText={(value) => setCelular({ ...celular, value })} />
                         <MyButton onPress={editarNombreUsuario} content={'Guardar'} />
 
-                        
+
                         <View style={[styles.contentPass, styles.contentPass2]} >
 
                             <TextInput style={styles.inputPass}
@@ -360,7 +370,7 @@ const SettingsScreen = () => {
                                 }
                             </Pressable>
                         </View>
-                        
+
                         <View style={[styles.contentPass, styles.contentPass2]} >
 
                             <TextInput style={styles.inputPass}

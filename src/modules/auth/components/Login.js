@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, Alert } from 'react-native'
 
 import globalStyles from '../../../styles/GlobalStyles';
 import logo from '../../../assets/logoentrada.png';
