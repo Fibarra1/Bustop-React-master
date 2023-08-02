@@ -40,6 +40,7 @@ const SettingsScreen = () => {
     const [showPassword, setShowPassword] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
     const [showPassword2, setShowPassword2] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
     const [showPassword3, setShowPassword3] = useState(true); //tru es se ve contraseña y false es no se ve contraseña
+    const [usuario, setUsuario] = useState();
 
 
     const { user } = useContext(AuthContext)
@@ -212,7 +213,7 @@ const SettingsScreen = () => {
 
     const onSingOff = async () => {
         if (userAuth) {
-           await auth()
+            await auth()
                 .signOut()
                 .then(() => console.log('Sesión cerrada correctamente.'))
                 .catch(error => console.error('Error al cerrar sesión:', error));
@@ -220,32 +221,37 @@ const SettingsScreen = () => {
         logout(); // Llamar a logout solo una vez si es necesario
     };
 
-
-    useEffect(() => {
-        if (lastSignInProvider === 'password' && user && Array.isArray(user.usuario)) {
-          // Filtramos el arreglo para obtener el primer elemento que no sea undefined
-          const validUser = user.usuario.find((u) => u !== undefined);
-      
-          if (validUser) {
-            console.log(validUser)
-            // Si encontramos un elemento válido, actualizamos el estado con sus propiedades
-            setIdUser({ value: validUser.idUser || '', errorMessage: '' });
-            setName({ value: validUser.nombre || '', errorMessage: '' });
-            setApellidoPat({ value: validUser.apellidoPat || '', errorMessage: '' });
-            setApellidoMat({ value: validUser.apellidoMat || '', errorMessage: '' });
-            setCorreo({ value: validUser.correo || '', errorMessage: '' });
-            setCelular({ value: validUser.telefono || '', errorMessage: '' });
-            setUidUser({ value: validUser.uid || '', errorMessage: '' });
-            setTipoUser({ value: validUser.tipoUser || '', errorMessage: '' });
-          }
-        }
-      }, [lastSignInProvider, user]);
+    // console.log(user.usuario[0].apellidoMat)
 
 
 
+    if (user && Array.isArray(user.usuario) && user.usuario.length > 0) {
+
+        useEffect(() => {
+            // Verifica si user y user.usuario[0] existen antes de continuar
+            setUsuario(user.usuario[0]);
+        }, [user]);
+
+        useEffect(() => {
+            if (lastSignInProvider === 'password' && usuario && usuario.idUser) {
+                setIdUser({ value: usuario.idUser || '', errorMessage: '' });
+                setName({ value: usuario.nombre || '', errorMessage: '' });
+                setApellidoPat({ value: usuario.apellidoPat || '', errorMessage: '' });
+                setApellidoMat({ value: usuario.apellidoMat || '', errorMessage: '' });
+                setCorreo({ value: usuario.correo || '', errorMessage: '' });
+                setCelular({ value: usuario.telefono || '', errorMessage: '' });
+                setUidUser({ value: usuario.uid || '', errorMessage: '' });
+                setTipoUser({ value: usuario.tipoUser || '', errorMessage: '' });
+            }
+        }, [lastSignInProvider, usuario]);
+
+    }
 
 
 
+
+
+console.log(user)
 
 
 
@@ -255,14 +261,14 @@ const SettingsScreen = () => {
             try {
                 const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Usuarios/${user.usuario[0].idUser}`;
                 const datosActualizados = {
-                    idUser: user.usuario[0].idUser,
+                    idUser: usuario.idUser,
                     nombre: name.value,
                     apellidoPat: apellidoPat.value,
                     apellidoMat: apellidoMat.value,
-                    correo: user.usuario[0].correo,
+                    correo: usuario.correo,
                     telefono: celular.value,
-                    uid: user.usuario[0].uid,
-                    tipoUser: user.usuario[0].tipoUser
+                    uid: usuario.uid,
+                    tipoUser: usuario.tipoUser
                 };
                 const response = await axios.put(url, datosActualizados, {
                     headers: {

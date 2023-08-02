@@ -97,7 +97,7 @@ export const AuthProvider: FC<ProviderProps> = ({ children }) => {
           .then((userCredential) => {
             // El usuario ha iniciado sesión exitosamente
             const user = userCredential.user;
-            console.log('Usuario autenticado:', user.uid);
+            console.log('Usuario autenticado:', user);
             login(user);
           })
           .catch((error) => {

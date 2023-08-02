@@ -80,6 +80,11 @@
             "email": "email@mail.com"
         },
         "btnSend": "Send"
+    },
+
+    "routes": {
+        "title": "Routes",
+        "searchRoute": "Select Route"
     }
 
     

@@ -8,10 +8,11 @@ interface Props {
     placeholder?: string | any,
     value?: string,
     errorMessage?: string,
-    onChangeText: (text: string) => void
+    onChangeText: (text: string) => void,
+    onPressIn: () => void,
 }
 
-export const MyInput: FC<Props> = ({ placeholder = '', value = '', errorMessage = '', onChangeText }) => {
+export const MyInput: FC<Props> = ({ placeholder = '', value = '', errorMessage = '', onChangeText, onPressIn }) => {
     return (
         <View style={[styles.containerInput]} >
             <TextInput style={styles.input}
@@ -21,7 +22,7 @@ export const MyInput: FC<Props> = ({ placeholder = '', value = '', errorMessage 
                 autoCapitalize='none'
                 value={value}
                 onChangeText={onChangeText}
-                onFocus={() => {}}
+                onPressIn={onPressIn}
             />
             {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
         </View>

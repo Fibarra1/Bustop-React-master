@@ -82,6 +82,11 @@
             "email": "email@mail.com"
         },
         "btnSend": "Enviar"
+    },
+
+    "routes": {
+        "title": "Rutas",
+        "searchRoute": "Seleccionar Ruta"
     }
 
 }

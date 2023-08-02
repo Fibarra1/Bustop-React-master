@@ -12,6 +12,88 @@
         "origin": "Origin",
         "destiny": "Destiny"
     },
+    "loginmethod": {
+        "google": "Account Google",
+        "facebook": "Account Facebook",
+        "email": "Email",
+        "letacount": "I do not have an account",
+        "letreg": "sign up"
+    },
+
+    "loginEmail": {
+        "textViews": {
+            "tv1": "ENTER EMAIL",
+            "tv2": "ENTER PASSWORD",
+            "tv3": "Did you forget your password?"
+        },
+
+        "holders": {
+            "email": "Email Examp: email@mail.com",
+            "pass": "Password"
+        },
+
+        "btns": {
+            "btnStartSesion": "Log in",
+            "btnRestPass": "Restore password"
+        },
+        
+        "messageError": {
+            "emailVacio": "The email field cannot be empty",
+            "emailInvalid": "Invalid Email",
+            "passVacio": "The password field cannot be empty",
+            "passInvalid": "Field must contain at least 6 characters"
+        }
+    },
+
+    "registeruser": {
+        "header":{
+            "title": "Register"
+        },
+
+        "holders":{
+            "name": "Name",
+            "appa": "Paternal Last Name",
+            "apma": "Maternal Last Name",
+            "email": "Email",
+            "cel": "Cel",
+            "password": "Password",
+            "reppassword":"Repeat Password",
+            "digit": "(10 Digits)"
+        },
+
+        "letterminos": "I have read and accepted the ",
+        "letterminoslink": "privacy policy",
+        "alert": {
+            "title": "Notice",
+            "body": "You will receive a verification notice in your email to activate your account",
+            "btnacept": "Ok"
+        },
+
+        "btns": {
+            "btnSave": "Save"
+        },
+
+        "messageError": {
+            "campoVacio": "The field cannot be empty",
+            "nameInvalid": "The name field must be more than 3 characters",
+            "apPaInvalid": "The last name field must be more than 3 characters",
+            "apMaInvalid": "The last name field must be more than 3 characters",
+            "emailInvalid": "Invalid email",
+            "celInvalid": "The field must contain 10 digits",
+            "passInvalid": "Short password must have 8 digits",
+            "passInvalid2": "Password does not match",
+            "checkSelect": "You must accept the privacy policy"
+        }
+    },
+
+    "resetPassword": {
+        "title": "Reset Password",
+        "textView": "Enter email",
+        "holders": {
+            "email": "email@mail.com"
+        },
+        "btnSend": "Send"
+    },
     "settings": {
         "title": "Settings",
         "subtitle1": "Account Settings",

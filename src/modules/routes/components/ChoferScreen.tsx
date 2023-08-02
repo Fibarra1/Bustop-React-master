@@ -14,7 +14,7 @@ import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 
 
 
-export const RouteScreen = () => {
+export const ChoferScreen = () => {
 
     const origin = { latitude: 19.03, longitude: -98.20 };
     const destination = { latitude: 23.03, longitude: -110.20 };

@@ -45,7 +45,7 @@ export const BottomTab = () => {
 
             }} />
             <Tab.Screen name="Select Route" component={SelectRouteScreen} options={{
-                tabBarIcon: ({ color }) => <FontistoIcon name="truck" size={iconSize} color={color} />
+                tabBarIcon: ({ color }) => <FontAwesome5Icon name="bus" size={iconSize} color={color} />
 
             }} />
             <Tab.Screen name="Home3" component={RouteScreen} options={{
