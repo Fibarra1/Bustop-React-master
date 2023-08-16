@@ -1,7 +1,10 @@
 {
     "routes": {
         "title": "Rutas",
-        "searchRoute": "Seleccionar Ruta"
+        "searchRoute": "Seleccionar Ruta",
+        "favoriteRoute": "Rutas Favoritas",
+        "btnFavRoute": "Agregar Favorito",
+        "btnFinish": "Finalizar"
     },
     "route": {
         "title": "Ruta"
@@ -10,34 +13,32 @@
         "title1": "¿A dónde",
         "title2": "quieres ir?",
         "origin": "Origen",
-        "destiny": "Destino"
+        "destiny": "Destino",
+        "search": "Buscar"
     },
     "loginmethod": {
         "google": "Cuenta Google",
         "facebook": "Cuenta Facebook",
         "email": "Correo Electrónico",
         "letacount": "No tengo cuenta.",
-        "letreg": "Registrarme"
+        "letreg": "Registrarme",
+        "drivers": "Conductores",
+        "recoverypass": "Recuperar Contraseña"
     },
-    
     "loginEmail": {
-
         "textViews": {
             "tv1": "INGRESA EMAIL",
             "tv2": "INGRESA LA CONTRASEÑA",
             "tv3": "¿Olvidaste tu contraseña?"
         },
-
         "holders": {
             "email": "Email Ej: email@mail.com",
             "pass": "Contraseña"
         },
-
         "btns": {
             "btnStartSesion": "Iniciar Sesion",
             "btnRestPass": "Restablecer Contraseña"
         },
-        
         "messageError": {
             "emailVacio": "El campo email no puede ser vacio",
             "emailInvalid": "Correo Invalido",
@@ -45,13 +46,11 @@
             "passInvalid": "El campo debe contener al menos 6 caracteres"
         }
     },
-
     "registeruser": {
-        "header":{
+        "header": {
             "title": "Registro"
         },
-
-        "holders":{
+        "holders": {
             "name": "Nombre",
             "appa": "Apellido Paterno",
             "apma": "Apellido Materno",
@@ -59,9 +58,8 @@
             "cel": "Celular",
             "digit": "(10 Digitos)",
             "password": "Contraseña",
-            "reppassword":"Repite la Contraseña"
+            "reppassword": "Repite la Contraseña"
         },
-
         "letterminos": "He leído y aceptado la ",
         "letterminoslink": "política de privacidad",
         "alert": {
@@ -69,11 +67,9 @@
             "body": "Recibiras un aviso de verificacion en tu correo para activar tu cuenta",
             "btnacept": "Aceptar"
         },
-
         "btns": {
             "btnSave": "Guardar"
         },
-
         "messageError": {
             "campoVacio": "El campo no puede estar vacio",
             "nameInvalid": "El campo nombre debe ser mas de 3 caracteres",
@@ -86,7 +82,6 @@
             "checkSelect": "Debes aceptar la politica de privacidad"
         }
     },
-
     "resetPassword": {
         "title": "Restablecer Contraseña",
         "textView": "Ingresar el correo electronico",

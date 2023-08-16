@@ -10,25 +10,30 @@ import Geolocation from 'react-native-geolocation-service';
 import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 import axios from 'axios';
 import MapViewDirections from 'react-native-maps-directions';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import { useRoute } from '@react-navigation/native';
 
 
 
 export const RouteScreen = () => {
 
+    const route = useRoute();
+
+    const params = route.params || {};
+
+    // Desestructurar los valores con asignación predeterminada
+    const { idRuta = '', color = '', nombre = '', colorLetra = '', abreviaturaRuta = '' } = params;
+
+    const defaultIdRuta = idRuta || '';
+    const defaultColor = color || '';
+    const defaultNombre = nombre || '';
+    const defaultColorLetra = colorLetra || '';
+    const defaultAbreviaturaRuta = abreviaturaRuta || '';
+
     const origin = { latitude: 19.03, longitude: -98.20 };
     const destination = { latitude: 23.03, longitude: -110.20 };
 
-    const coordinates = [
-        {
-            latitude: 19.3317876,
-            longitude: -98.3317876,
-        },
-        {
-            latitude: 23.3317876,
-            longitude: -110.3317876,
-        },
-    ]
     const { t } = useTranslation();
 
 
@@ -43,29 +48,41 @@ export const RouteScreen = () => {
         longitude: -98.1980244
     });
 
-    useEffect(() => {
+    const getPosition = () => {
         Geolocation.getCurrentPosition((pos) => {
             const crd = pos.coords;
             setPosition({
                 latitude: crd.latitude,
                 longitude: crd.longitude,
             });
-        })
+        });
+    };
+
+    useEffect(() => {
+        getPosition()
+    }, []);
+
+    useEffect(() => {
+        // Ejecutar la función cada 30 segundos
+        const interval = setInterval(getPosition, 6000);
+
+        // Limpieza: eliminar el intervalo cuando el componente se desmonte
+        return () => clearInterval(interval);
     }, []);
 
     const [paradas, setParadas] = useState([]);
 
 
-    useEffect(() => {
-        axios.get(API_URL)
-            .then(response => {
-                setParadas(response.data);
+    // useEffect(() => {
+    //     axios.get(API_URL)
+    //         .then(response => {
+    //             setParadas(response.data);
 
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, []);
+    //         })
+    //         .catch(error => {
+    //             console.error(error);
+    //         });
+    // }, []);
     const [routeCoordinates, setRouteCoordinates] = useState([]);
 
 
@@ -81,6 +98,46 @@ export const RouteScreen = () => {
             });
     }, []);
 
+    const [coordenadasRuta, setCoordenadasRuta] = useState(null);
+
+    useEffect(() => {
+        const url = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/CordenadaRutas/GetCordenadaByIdRuta';
+
+        // Datos a enviar en el body de la solicitud POST
+        const data = {
+            id: defaultIdRuta,
+        };
+
+        // Realizar la solicitud POST utilizando Axios
+        axios
+            .post(url, data)
+            .then((response) => {
+                // Actualizar el estado con la respuesta de la API
+                setCoordenadasRuta(response.data);
+            })
+            .catch((error) => {
+                console.error('Error al obtener los datos:', error);
+            });
+    }, [defaultIdRuta]);
+
+    useEffect(() => {
+        const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/RutasParadas/GetParadasByIdRuta/${defaultIdRuta}`;
+
+        
+        // Realizar la solicitud POST utilizando Axios
+        axios.get(url)
+            .then(response => {
+                setParadas(response.data);
+
+            })
+            .catch(error => {
+                // console.error(error);
+            });
+    }, [defaultIdRuta]);
+
+
+
+
     // console.log(routeCoordinates.map(coordinate => ({ latitude: coordinate.latitud, longitude: coordinate.longitud })));
 
 
@@ -92,16 +149,15 @@ export const RouteScreen = () => {
             <Text style={styles.title}>{t('route:title')}</Text>
 
             <View style={styles.rowRoutes}>
-                <SquareRoute contentColor='red' bgColor='orange' content='10' />
-                <SquareRoute contentColor='white' bgColor='purple' content='72' />
+                <SquareRoute contentColor={defaultColorLetra === '' ? 'black' : defaultColorLetra} bgColor={defaultColor === null ? 'white' : defaultColor} content={defaultAbreviaturaRuta === '' ? 'S/R' : defaultAbreviaturaRuta} />
             </View>
 
             <MapView style={styles.map}
-                initialRegion={{
+                region={{
                     latitude: position.latitude,
                     longitude: position.longitude,
                     latitudeDelta: 0,
-                    longitudeDelta: 0.051,
+                    longitudeDelta: 0.010,
                 }}
             >
                 {/* {
@@ -123,7 +179,9 @@ export const RouteScreen = () => {
                     coordinate={{ latitude: position.latitude, longitude: position.longitude }}
                     title={"Tu ubicación"}
                     description={"Esta es tu ubicación actual."}
-                />
+                >
+                    <FontAwesome5 name="circle" size={20} color='#00B0FF' solid />
+                </Marker>
                 {paradas.map(({ nombre, longitud, latitud, idParada }, index) => (
                     <Marker
                         key={idParada}
@@ -138,23 +196,26 @@ export const RouteScreen = () => {
                     </Marker>
                 ))}
 
-                {/* <MapViewDirections
-                    origin={{
-                        latitude: parseFloat(paradas[0].latitud),
-                        longitude: parseFloat(paradas[0].longitud),
-                    }} // Origen de la ruta (ubicación actual)
-                    destination={{
-                        latitude: parseFloat(paradas[0].latitud),
-                        longitude: parseFloat(paradas[0].longitud),
-                    }} // Destino de la ruta (última parada)
-                    waypoints={paradas.slice(1, paradas.length - 1).map((parada) => ({
-                        latitude: parseFloat(parada.latitud),
-                        longitude: parseFloat(parada.longitud),
-                    }))} // Puntos intermedios (paradas intermedias)
-                    apikey={api_Directions}
-                    strokeWidth={3}
-                    strokeColor="black"
-                /> */}
+
+                {Array.isArray(coordenadasRuta) && coordenadasRuta[0] ? (
+                    <MapViewDirections
+                        origin={{
+                            latitude: parseFloat(coordenadasRuta[0].latitud),
+                            longitude: parseFloat(coordenadasRuta[0].longitud),
+                        }}
+                        destination={{
+                            latitude: parseFloat(coordenadasRuta[0].latitud),
+                            longitude: parseFloat(coordenadasRuta[0].longitud),
+                        }}
+                        waypoints={coordenadasRuta.slice(1, coordenadasRuta.length - 1).map((coordenada) => ({
+                            latitude: parseFloat(coordenada.latitud),
+                            longitude: parseFloat(coordenada.longitud),
+                        }))}
+                        apikey={api_Directions}
+                        strokeWidth={3}
+                        strokeColor={defaultColor}
+                    />
+                ) : null}
             </MapView>
 
         </View>
@@ -196,13 +257,13 @@ const styles = StyleSheet.create({
     },
     rowRoutes: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 40,
+        justifyContent: 'center',
+        marginVertical: 20,
         marginHorizontal: 97
     },
     map: {
         width: "100%",
-        height: 480
+        height: 520
 
     },
 })

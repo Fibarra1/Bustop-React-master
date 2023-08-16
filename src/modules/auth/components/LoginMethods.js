@@ -207,7 +207,18 @@ const LoginMethods = ({ navigation }) => {
             onPress={() => navigation.navigate('RestablecerPass')}
           >
             <View style={styles.btnContenedor} >
-              <Text style={styles.btnTexto} >{t('Recuperar Contraseña')}</Text>
+              <Text style={styles.btnTexto} >{t('loginmethod:recoverypass')}</Text>
+            </View>
+          </Pressable>
+          <Pressable style={[styles.btnLogins, { alignItems: 'center', backgroundColor: 'white' }]}
+            onPress={() => navigation.navigate('Drivers')}
+          >
+            <View style={styles.btnContenedor} >
+              <Text style={{
+                color: 'black',
+                fontWeight: '700',
+                fontSize: height1 * 0.02
+              }} >{t('loginmethod:drivers')}</Text>
             </View>
           </Pressable>
         </View>

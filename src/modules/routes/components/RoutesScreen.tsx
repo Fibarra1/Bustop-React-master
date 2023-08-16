@@ -15,6 +15,7 @@ import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import MapViewDirections from 'react-native-maps-directions';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -27,12 +28,13 @@ var width1 = Dimensions.get("window").width;
 const RoutesScreen = () => {
 
     const { user } = useContext(AuthContext)
-    
+
 
 
 
     const API_URL = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Paradas';
-    const API_RUTAS = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Rutas'
+    const API_RUTAS = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/Rutas';
+    const API_RUTAS_FAVORITAS = 'https://beautiful-mendel.68-168-208-58.plesk.page/api/RutasFavoritas/GetRutaFavorita';
     const api_Directions = 'AIzaSyB9DcIvaDukFT5D8a4S7zbDlm_dismNVG8'
 
     const [lastSignInProvider, setLastSignInProvider] = useState('');
@@ -97,6 +99,9 @@ const RoutesScreen = () => {
             });
     }, []);
 
+    const [rutasfav, setRutasfav] = useState()
+
+
     useEffect(() => {
         const fetchLastSignInProvider = async () => {
             try {
@@ -112,15 +117,41 @@ const RoutesScreen = () => {
             }
         };
 
+
         fetchLastSignInProvider();
     }, []);
 
+    const [userUID, setUserUID] = useState()
+
     useEffect(() => {
-        if (lastSignInProvider !== 'password' && user.uid) {
-            console.log(`Aqui :${user.uid}`)
+        if (lastSignInProvider !== 'password') {
+            setUserUID(user.uid)
+        } if (lastSignInProvider === 'password') {
+            setUserUID(user.usuario[0].uid)
         }
     }, [user])
 
+    useEffect(() => {
+
+        const getFavRutas = async () => {
+            try {
+                const datosActualizados = {
+                    "uid": userUID,
+                };
+                const response = await axios.post(API_RUTAS_FAVORITAS, datosActualizados);
+                console.log('Rutas Fav', response.data);
+                setRutasfav(response.data)
+
+                // Actualizar la interfaz de usuario con el nuevo nombre
+                // ...
+            } catch (error) {
+                // console.error('Error al consultar Ruta Favorita');
+            }
+        }
+        if (userUID !== undefined) {
+            getFavRutas()
+        }
+    }, [userUID]);
 
 
 
@@ -158,45 +189,110 @@ const RoutesScreen = () => {
 
 
     // Función para agregar o quitar una ruta de las favoritas
-    // const toggleFavorito = (idRuta, color, nombre) => {
-    //     // Crear una copia del estado rutasFavoritas para no modificarlo directamente
-    //     const updatedRutasFavoritas = [...rutasFavoritas];
+    const toggleFavorito = (idRuta, color, nombre) => {
+        // Crear una copia del estado rutasFavoritas para no modificarlo directamente
+        const updatedRutasFavoritas = [...rutasFavoritas];
 
-    //     const isFavorito = updatedRutasFavoritas.some((ruta) => ruta.idRuta === idRuta);
-    //     if (isFavorito) {
-    //         // Si ya es favorito, lo eliminamos de las rutas favoritas
-    //         const index = updatedRutasFavoritas.findIndex((ruta) => ruta.idRuta === idRuta);
-    //         if (index !== -1) {
-    //             updatedRutasFavoritas.splice(index, 1);
-    //         }
-    //     } else {
-    //         // Si no es favorito, lo agregamos a las rutas favoritas
-    //         updatedRutasFavoritas.push({ idRuta, color, nombre });
-    //     }
+        const isFavorito = updatedRutasFavoritas.some((ruta) => ruta.idRuta === idRuta);
+        if (isFavorito) {
+            // Si ya es favorito, lo eliminamos de las rutas favoritas
+            const index = updatedRutasFavoritas.findIndex((ruta) => ruta.idRuta === idRuta);
+            if (index !== -1) {
+                updatedRutasFavoritas.splice(index, 1);
+            }
+        } else {
+            // Si no es favorito, lo agregamos a las rutas favoritas
+            updatedRutasFavoritas.push({ idRuta, color, nombre });
+        }
 
-    //     // Actualizar el estado rutasFavoritas con la copia actualizada
-    //     setRutasFavoritas(updatedRutasFavoritas);
-    // };
+        // Actualizar el estado rutasFavoritas con la copia actualizada
+        setRutasFavoritas(updatedRutasFavoritas);
+    };
 
-    const handleFavorito = async (idRuta, color, nombre, idUser) => {
-
+    const handleFavorito = async (idRuta, color, nombre, colorLetra, abreviaturaRuta, uid) => {
+        const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/RutasFavoritas`;
         try {
-            const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/RutasFavoritas`;
-            const datosActualizados = {
-                "idUser": idUser,
-                "idRuta": idRuta,
-                "color": color,
-                "nombre": nombre
-            };
-            const response = await axios.put(url, datosActualizados);
-            console.log('Se ha añadido correctamente la Ruta Favorita', response.data);
+
+
+
+
+            // Verificar si la ruta ya está en favoritos
+            const rutaExistente = rutasfav.find(ruta => ruta.idRuta === idRuta);
+
+            // console.log(favoritosResponse)
+            console.log(rutaExistente)
+
+            if (rutaExistente) {
+                // Si la ruta ya está en favoritos, eliminarla
+                const requestBody = {
+                    idRuta: idRuta,
+                    uid: uid
+                };
+
+                try {
+                    await axios.delete(url, { data: requestBody });
+                    console.log('Se ha eliminado correctamente la Ruta Favorita', requestBody);
+                } catch (error) {
+                    console.error('Error al eliminar la Ruta Favorita', error);
+                }
+            } else {
+                // Si la ruta no está en favoritos, agregarla
+                const datosActualizados = {
+                    "uid": uid,
+                    "idRuta": idRuta,
+                    "color": color,
+                    "nombre": nombre,
+                    "abreviaturaRuta": abreviaturaRuta === null ? 'S/R' : abreviaturaRuta,
+                    "colorLetra": colorLetra === null ? 'white' : colorLetra
+                };
+                const response = await axios.post(url, datosActualizados);
+                console.log('Se ha añadido correctamente la Ruta Favorita', response.data);
+            }
+
+            try {
+                const datosActualizados = {
+                    "uid": userUID,
+                };
+                const response = await axios.post(API_RUTAS_FAVORITAS, datosActualizados);
+                console.log('Rutas Fav', response.data);
+                setRutasfav(response.data)
+
+
+            } catch (error) {
+                setRutasfav([])
+                // console.error('Error al consultar Ruta Favorita');
+            }
 
             // Actualizar la interfaz de usuario con el nuevo nombre
             // ...
         } catch (error) {
-            console.error('Error al añadir ruta Favorita');
+            const datosActualizados = {
+                "uid": uid,
+                "idRuta": idRuta,
+                "color": color,
+                "nombre": nombre,
+                "abreviaturaRuta": abreviaturaRuta === null ? 'S/R' : abreviaturaRuta,
+                "colorLetra": colorLetra === null ? 'white' : colorLetra
+            };
+            const response = await axios.post(url, datosActualizados);
+            console.log('Se ha añadido correctamente la Ruta Favorita', response.data);
+            try {
+                const datosActualizados = {
+                    "uid": userUID,
+                };
+                const response = await axios.post(API_RUTAS_FAVORITAS, datosActualizados);
+                console.log('Rutas Fav', response.data);
+                setRutasfav(response.data)
+
+
+            } catch (error) {
+                setRutasfav([])
+                // console.error('Error al consultar Ruta Favorita');
+                
+            }
         }
     };
+
 
     const activeButton = () => {
         setIsActive(!isActive)
@@ -208,6 +304,8 @@ const RoutesScreen = () => {
     // console.log(rutasFavoritas)
 
     // console.log(rutasFavoritasData)
+
+    const navigation = useNavigation();
 
 
 
@@ -244,6 +342,13 @@ const RoutesScreen = () => {
                                 style={styles.rutasItem}
                                 onPress={() => {
                                     setSeletedRoute({ value: item.nombre, errorMessage: '' });
+                                    navigation.navigate('Home3', {
+                                        idRuta: item.idRuta,
+                                        color: item.color,
+                                        nombre: item.nombre,
+                                        colorLetra: item.colorLetra,
+                                        abreviaturaRuta: item.abreviaturaRuta
+                                    });
                                 }}
                             >
                                 <Text style={{ fontSize: 20 }}>{item.nombre}</Text>
@@ -334,17 +439,26 @@ const RoutesScreen = () => {
                 </View>
                 <View>
                     <View style={styles.containerRoutes}>
-                        {rutasFavoritas.length > 0 ?
-                            <Text style={{ color: 'white', fontSize: 30, textAlign: 'center', paddingBottom: 10 }}>Rutas Favoritas</Text>
+                        {rutasfav !== undefined && rutasfav.length > 0 ?
+                            <Text style={{ color: 'white', fontSize: 30, textAlign: 'center', paddingBottom: 10 }}>{t('routes:favoriteRoute')}</Text>
                             : null}
                         <View style={styles.rowRoutes2}>
-                            {rutasFavoritas.length > 0 ?
-                                rutasFavoritas.map(({ idRuta, color, nombre }, index) => (
+                            {rutasfav !== undefined && rutasfav.length > 0 ?
+                                rutasfav.map(({ idRuta, color, nombre, colorLetra, abreviaturaRuta }, index) => (
                                     <View key={index} style={{ paddingBottom: 20, paddingHorizontal: 13 }}>
-                                        <SquareRoute contentColor='red' bgColor={color === 'aa' ? 'white' : color} content={idRuta} onPress={() => {
-                                            !isActive ?
+                                        <SquareRoute contentColor={colorLetra === '' ? 'black' : colorLetra} bgColor={color === null ? 'white' : color} content={abreviaturaRuta === '' ? 'S/R' : abreviaturaRuta} onPress={() => {
+                                            if (!isActive) {
                                                 setSeletedRoute({ value: nombre, errorMessage: '' })
-                                                : handleFavorito(idRuta, color, nombre)
+                                                navigation.navigate('Home3', {
+                                                    idRuta: idRuta,
+                                                    color: color,
+                                                    nombre: nombre,
+                                                    colorLetra: colorLetra,
+                                                    abreviaturaRuta: abreviaturaRuta
+                                                });
+                                            } else {
+                                                handleFavorito(idRuta, color, nombre, colorLetra, abreviaturaRuta, userUID)
+                                            }
                                         }}
                                         />
 
@@ -352,17 +466,26 @@ const RoutesScreen = () => {
                                 )) : null}
 
                         </View>
-                        {rutasFavoritas.length > 0 ?
-                            <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Rutas</Text>
+                        {rutasfav !== undefined && rutasfav.length > 0 ?
+                            <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>{t('routes:title')}</Text>
                             : null}
                         <View style={styles.rowRoutes}>
 
-                            {rutas.map(({ idRuta, color, nombre }, index) => (
+                            {rutas.map(({ idRuta, color, nombre, colorLetra, abreviaturaRuta }, index) => (
                                 <View key={index} style={{ paddingBottom: 20, paddingHorizontal: 13 }}>
-                                    <SquareRoute contentColor='red' bgColor={color === 'aa' ? 'white' : color} content={idRuta} onPress={() => {
-                                        !isActive ?
+                                    <SquareRoute contentColor={colorLetra === null ? 'black' : colorLetra} bgColor={color === null ? 'white' : color} content={abreviaturaRuta === null ? 'S/R' : abreviaturaRuta} onPress={() => {
+                                        if (!isActive) {
                                             setSeletedRoute({ value: nombre, errorMessage: '' })
-                                            : toggleFavorito(idRuta, color, nombre)
+                                            navigation.navigate('Home3', {
+                                                idRuta: idRuta,
+                                                color: color,
+                                                nombre: nombre,
+                                                colorLetra: colorLetra,
+                                                abreviaturaRuta: abreviaturaRuta
+                                            });
+                                        } else {
+                                            handleFavorito(idRuta, color, nombre, colorLetra, abreviaturaRuta, userUID)
+                                        }
                                     }}
                                     />
 
@@ -370,7 +493,7 @@ const RoutesScreen = () => {
                             ))}
                         </View>
                         <View style={{ paddingHorizontal: 15 }}>
-                            <MyButton onPress={activeButton} content={!isActive ? 'Agregar Favorito' : 'Finalizar'} />
+                            <MyButton onPress={activeButton} content={!isActive ? t('routes:btnFavRoute') : t('routes:btnFinish')} />
                         </View>
 
                         {/* <SquareRoute contentColor='orange' bgColor='blue' content='Blvd' />

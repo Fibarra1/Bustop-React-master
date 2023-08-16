@@ -96,17 +96,10 @@ const Login = ({ navigation }) => {
       try {
         const response = await postLogin(email.trim(), pass.toString().trim());
         if (response.status === 200) {
-          if (response.data.usuario[0].tipoUser === '2') {
-            console.log(response.data.usuario[0].tipoUser);
-            setUserID(response.data.usuario[0].uid)
-            console.log(response.status);
-            login(response.data)
-          }
           console.log(response.data.usuario[0].tipoUser);
           setUserID(response.data.usuario[0].uid)
           console.log(response.status);
           login(response.data)
-          navigation.navigate('Routes')
         }
         setIsLoading(false)
       } catch (error) {

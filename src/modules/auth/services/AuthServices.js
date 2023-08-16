@@ -22,6 +22,23 @@ export const postLogin = async (email, password) => {
 
   }
 }
+export const postLoginDriver = async (correo, password) => {
+  try {
+    const response = await axiosInstance.post('/api/Conductores/LoginConductor', {
+      correo,
+      password,
+    });
+
+    //console.log(response.data);
+    return response;
+
+  } catch (error) {
+
+    console.error(error);
+    return error;
+
+  }
+}
 
 /* ARMANDO GOMEZ 10/03/2023
 FUNCION PARA ENVIAR EL FORMULARIO 
