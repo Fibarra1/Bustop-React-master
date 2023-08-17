@@ -29,7 +29,7 @@ export const ChoferScreen = () => {
     const params = route.params || {};
 
     // Desestructurar los valores con asignación predeterminada
-    const { idConductor = ''} = params;
+    const { idConductor = '' } = params;
 
     const defaultIdConductor = idConductor || '';
 
@@ -161,24 +161,25 @@ export const ChoferScreen = () => {
 
         const fechaActual = new Date().toISOString();
 
-        if(route !== null && unit !== null){// Datos a enviar en el body de la solicitud POST
-        const data = {
-            idConductor: defaultIdConductor,
-            idRuta: route.idRuta,
-            idUnidad: unit.idUnidad,
-            fechaActual: fechaActual
-        };
+        if (route !== null && unit !== null) {// Datos a enviar en el body de la solicitud POST
+            const data = {
+                idConductor: defaultIdConductor,
+                idRuta: route.idRuta,
+                idUnidad: unit.idUnidad,
+                fechaActual: fechaActual
 
-        // Realizar la solicitud POST utilizando Axios
-        axios
-            .post(url, data)
-            .then((response) => {
-                // Actualizar el estado con la respuesta de la API
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.error('Error al publicar los datos:', error);
-            });
+            };
+
+            // Realizar la solicitud POST utilizando Axios
+            axios
+                .post(url, data)
+                .then((response) => {
+                    // Actualizar el estado con la respuesta de la API
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error al publicar los datos:', error);
+                });
         }
         setSelection(true)
         setModalVisible(false);
@@ -220,7 +221,7 @@ export const ChoferScreen = () => {
                 }}>
                     <FontAwesome5 name="exclamation-triangle" size={80} color='red' />
                 </TouchableOpacity>
-                    <MyButton onPress={handleCleanRute} content={'     Terminar Ruta     '} />
+                <MyButton onPress={handleCleanRute} content={'     Terminar Ruta     '} />
             </View>
 
                 :
