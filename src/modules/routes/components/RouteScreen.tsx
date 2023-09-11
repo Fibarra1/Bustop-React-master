@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity, ImageSourcePropType, Dimensions, Image, Modal } from 'react-native'
 import { useTranslation } from 'react-i18next';
 import '../../home/translations/i18n';
 import SquareRoute from './SquareRoute';
@@ -12,11 +12,43 @@ import axios from 'axios';
 import MapViewDirections from 'react-native-maps-directions';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const { width: screenWidth } = Dimensions.get('window')
+
+interface Slide {
+    title: string;
+    desc: string;
+    img: ImageSourcePropType
+}
+
+const items: Slide[] = [
+    {
+        title: 'Ruta',
+        desc: 'En esta parte podremos ver la Ruta que seleccionamos en la pantalla de Rutas. ',
+        img: require('../../../assets/RoutesAsset1.png')
+    },
+    {
+        title: 'Ruta en el Mapa',
+        desc: 'Aqui se mostrara el viaje completo de la Ruta y la ubicación de todas las paradas que la ruta tenga asi como la ubicación de las Unidades disponibles. ',
+        img: require('../../../assets/RoutesAsset2.png')
+    },
+    {
+        title: 'Paradas',
+        desc: 'Cada vez que observemos en el mapa este icono significa que hay una parada en esa ubicación por donde pasara la Ruta. ',
+        img: require('../../../assets/RoutesAsset3.png')
+    },
+]
 
 
 
 export const RouteScreen = () => {
+
+    const navigation = useNavigation()
 
     const route = useRoute();
 
@@ -123,7 +155,7 @@ export const RouteScreen = () => {
     useEffect(() => {
         const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/RutasParadas/GetParadasByIdRuta/${defaultIdRuta}`;
 
-        
+
         // Realizar la solicitud POST utilizando Axios
         axios.get(url)
             .then(response => {
@@ -134,6 +166,55 @@ export const RouteScreen = () => {
                 // console.error(error);
             });
     }, [defaultIdRuta]);
+
+    const [unidadesCoord, setUnidadesCoord] = useState([])
+
+    useEffect(() => {
+        const fetchData = () => {
+            const url = `https://beautiful-mendel.68-168-208-58.plesk.page/api/Unidades/ubicacion-ultima/${defaultIdRuta}`;
+
+            // Realizar la solicitud GET utilizando Axios
+            axios
+                .get(url)
+                .then((response) => {
+                    // Extraer latitudes y longitudes de los datos y guardarlas en un array
+                    const ubicacionesArray = response.data.map((item) => ({
+                        latitud: item.ultimaUbicacion.latitud,
+                        longitud: item.ultimaUbicacion.longitud,
+                    }));
+
+                    // Guardar el array de ubicaciones en el estado
+                    setUnidadesCoord(ubicacionesArray);
+                })
+                .catch((error) => {
+                });
+        };
+
+        // Ejecutar fetchData inmediatamente al cargar el componente
+        fetchData();
+
+        // Configurar un intervalo para ejecutar fetchData cada 6 segundos
+        const intervalId = setInterval(fetchData, 10000);
+
+        // Limpiar el intervalo cuando el componente se desmonta
+        return () => clearInterval(intervalId);
+    }, [defaultIdRuta]);
+
+
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+    const isVisible = useRef(false)
+
+    const renderItem = (item: Slide) => {
+        return (
+            <View style={{ flex: 1, backgroundColor: 'black', borderRadius: 5, padding: 40, justifyContent: 'center' }}>
+                <Image source={item.img} style={{ width: 350, height: 400, resizeMode: 'center', right: 10 }} />
+                <Text style={{ ...styles.title2, color: 'red' }}>{item.title}</Text>
+                <Text style={{ ...styles.subtitle, color: 'white' }}>{item.desc}</Text>
+            </View>
+        )
+    }
+
 
 
 
@@ -146,7 +227,12 @@ export const RouteScreen = () => {
             <View>
                 <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
             </View>
-            <Text style={styles.title}>{t('route:title')}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity style={{ position: 'absolute', paddingLeft: 300 }} onPress={() => setShowModal(true)}>
+                    <Ionicons name="help-circle-outline" size={40} color='white' />
+                </TouchableOpacity>
+                <Text style={styles.title}>{t('route:title')}</Text>
+            </View>
 
             <View style={styles.rowRoutes}>
                 <SquareRoute contentColor={defaultColorLetra === '' ? 'black' : defaultColorLetra} bgColor={defaultColor === null ? 'white' : defaultColor} content={defaultAbreviaturaRuta === '' ? 'S/R' : defaultAbreviaturaRuta} />
@@ -196,6 +282,21 @@ export const RouteScreen = () => {
                     </Marker>
                 ))}
 
+                {unidadesCoord.length > 0 ? (
+                    unidadesCoord.map((ubicacion, index) => (
+                        <Marker
+                            key={index}
+                            coordinate={{
+                                latitude: parseFloat(ubicacion.latitud),
+                                longitude: parseFloat(ubicacion.longitud)
+                            }}
+                        >
+                            <MaterialCommunityIcons name="bus-side" size={20} color='red' />
+                        </Marker>
+
+                    ))
+                ) : null}
+
 
                 {Array.isArray(coordenadasRuta) && coordenadasRuta[0] ? (
                     <MapViewDirections
@@ -217,6 +318,79 @@ export const RouteScreen = () => {
                     />
                 ) : null}
             </MapView>
+
+            {showModal === true ? (
+                <Modal>
+                    <SafeAreaView
+                        style={{
+                            flex: 1,
+                            backgroundColor: 'black',
+                            paddingTop: 50,
+                        }}
+                    >
+
+                        <Carousel
+                            data={items}
+                            renderItem={({ item }) => renderItem(item)}
+                            sliderWidth={screenWidth}
+                            itemWidth={screenWidth}
+                            layout="default"
+                            onSnapToItem={(index) => {
+                                setActiveIndex(index)
+                                if (index === 2) {
+                                    isVisible.current = true;
+                                }
+                            }}
+                        />
+                        <View style={{
+                            flexDirection: 'row',
+                            alignContent: 'space-between',
+                            backgroundColor: 'black',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginHorizontal: 20
+                        }}>
+                            <Pagination
+                                dotsLength={items.length}
+                                activeDotIndex={activeIndex}
+                                dotStyle={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: 10,
+                                    backgroundColor: 'red'
+                                }}
+                            />
+                            <View>
+                                <TouchableOpacity style={{
+                                    flexDirection: 'row',
+                                    backgroundColor: 'red',
+                                    width: 140,
+                                    height: 50,
+                                    borderRadius: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        if (isVisible.current) {
+                                            console.log('navegar ...')
+                                            // navigation.navigate('HomeScreen');
+                                            setShowModal(false)
+                                        }
+                                    }}
+                                >
+                                    <Text style={{
+                                        fontSize: 25,
+                                        color: 'white'
+                                    }}>Aceptar</Text>
+                                    {/* <Icon style={{ paddingTop: 4 }} name="chevron-forward-outline" color="white" size={25} /> */}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </SafeAreaView>
+                </Modal>
+
+            ) : null}
 
         </View>
         // <MainLayout>
@@ -266,4 +440,12 @@ const styles = StyleSheet.create({
         height: 520
 
     },
+    title2: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#5856D6'
+    },
+    subtitle: {
+        fontSize: 16
+    }
 })

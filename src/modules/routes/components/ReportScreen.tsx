@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Button, TextInput, Alert } from 'react-native'
 import { useTranslation } from 'react-i18next';
-import Modal from 'react-native-modal';
+import Modal2 from 'react-native-modal';
 import '../../home/translations/i18n';
 import SquareRoute from './SquareRoute';
 import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
@@ -9,6 +9,40 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Picker } from '@react-native-picker/picker';
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { ImageSourcePropType } from 'react-native';
+import { Dimensions } from 'react-native';
+import { Image } from 'react-native';
+import { Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+
+const { width: screenWidth } = Dimensions.get('window')
+
+interface Slide {
+  title: string;
+  desc: string;
+  img: ImageSourcePropType
+}
+
+const items: Slide[] = [
+  {
+    title: 'Reportes',
+    desc: 'Al inicio se nos mostrara la Ruta y Unidad que disponemos y nos mostrara las opciones de Reportes que hay y que podremos seleccionar. ',
+    img: require('../../../assets/ReportAsset1.png')
+  },
+  {
+    title: 'Cambio de Ruta',
+    desc: 'En la parte de Cambio de Ruta tendremos que seleccionar la opción de porque hubo cambio de Ruta y posteriormente darle al boton Aceptar. ',
+    img: require('../../../assets/ReportAsset2.png')
+  },
+  {
+    title: 'Otro',
+    desc: 'En esta parte tendremos que poner una breve descripción del reporte y posteriormente darle al boton Aceptar. ',
+    img: require('../../../assets/ReportAsset3.png')
+  },
+]
+
 
 
 
@@ -46,7 +80,7 @@ export const ReportScreen = () => {
   const handleAccept = () => {
     // Aquí puedes hacer algo con la opción seleccionada, como enviarla a un servidor, etc.
     const fechaActual = new Date().toISOString();
-    
+
 
     const requestData = {
       "idConductor": defaultIdConductor,
@@ -96,6 +130,20 @@ export const ReportScreen = () => {
     toggleModalOther();
   };
 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showModal2, setShowModal2] = useState(false);
+  const isVisible = useRef(false)
+
+  const renderItem = (item: Slide) => {
+    return (
+      <View style={{ flex: 1, backgroundColor: 'black', borderRadius: 5, padding: 40, justifyContent: 'center' }}>
+        <Image source={item.img} style={{ width: 350, height: 400, resizeMode: 'center', right: 10 }} />
+        <Text style={{ ...styles.title2, color: 'red' }}>{item.title}</Text>
+        <Text style={{ ...styles.subtitle, color: 'white' }}>{item.desc}</Text>
+      </View>
+    )
+  }
+
 
 
 
@@ -105,7 +153,11 @@ export const ReportScreen = () => {
       <View>
         <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
       </View>
-
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', top: 30 }}>
+        <TouchableOpacity style={{ position: 'absolute', paddingLeft: 300 }} onPress={() => setShowModal2(true)}>
+          <Ionicons name="help-circle-outline" size={40} color='white' />
+        </TouchableOpacity>
+      </View>
       <View style={styles.rowRoutes}>
         <FontAwesome5 name="exclamation-triangle" size={100} color='red' style={{ paddingBottom: 20 }} />
         <SquareRoute contentColor={defaultColorLetra === null ? 'black' : defaultColorLetra} bgColor={defaultColor === null ? 'white' : defaultColor} content={defaultAbreviaturaRuta === null ? 'S/R' : defaultAbreviaturaRuta} />
@@ -136,7 +188,7 @@ export const ReportScreen = () => {
 
 
       </View>
-      <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+      <Modal2 isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={{ backgroundColor: 'white', padding: 16 }}>
           <Text style={styles.text1}>Selecciona una opción:</Text>
 
@@ -160,9 +212,9 @@ export const ReportScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal2>
 
-      <Modal isVisible={isModalVisibleOther} onBackdropPress={toggleModalOther}>
+      <Modal2 isVisible={isModalVisibleOther} onBackdropPress={toggleModalOther}>
         <View style={{ backgroundColor: 'white', padding: 16 }}>
           <Text style={[styles.text1, { paddingBottom: 10 }]}>Ingresa un Descripción:</Text>
 
@@ -182,7 +234,81 @@ export const ReportScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal2>
+
+      {showModal2 === true ? (
+        <Modal>
+          <SafeAreaView
+            style={{
+              flex: 1,
+              backgroundColor: 'black',
+              paddingTop: 50,
+              zIndex: 1
+            }}
+          >
+
+            <Carousel
+              data={items}
+              renderItem={({ item }) => renderItem(item)}
+              sliderWidth={screenWidth}
+              itemWidth={screenWidth}
+              layout="default"
+              onSnapToItem={(index) => {
+                setActiveIndex(index)
+                if (index === 2) {
+                  isVisible.current = true;
+                }
+              }}
+            />
+            <View style={{
+              flexDirection: 'row',
+              alignContent: 'space-between',
+              backgroundColor: 'black',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginHorizontal: 20
+            }}>
+              <Pagination
+                dotsLength={items.length}
+                activeDotIndex={activeIndex}
+                dotStyle={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 10,
+                  backgroundColor: 'red'
+                }}
+              />
+              <View>
+                <TouchableOpacity style={{
+                  flexDirection: 'row',
+                  backgroundColor: 'red',
+                  width: 140,
+                  height: 50,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    if (isVisible.current) {
+                      console.log('navegar ...')
+                      // navigation.navigate('HomeScreen');
+                      setShowModal2(false)
+                    }
+                  }}
+                >
+                  <Text style={{
+                    fontSize: 25,
+                    color: 'white'
+                  }}>Aceptar</Text>
+                  {/* <Icon style={{ paddingTop: 4 }} name="chevron-forward-outline" color="white" size={25} /> */}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </SafeAreaView>
+        </Modal>
+
+      ) : null}
 
 
 
@@ -241,5 +367,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     paddingHorizontal: 20
+  },
+  title2: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#5856D6'
+  },
+  subtitle: {
+    fontSize: 16
   }
+
 })

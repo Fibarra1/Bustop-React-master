@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { Text, View, StyleSheet, ScrollView, Alert, Platform, Button, TouchableOpacity, FlatList, Dimensions, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, Alert, Platform, Button, TouchableOpacity, FlatList, Dimensions, TextInput, TouchableWithoutFeedback, Keyboard, Modal, Image, ImageSourcePropType } from 'react-native'
 import '../../home/translations/i18n';
 import { useTranslation } from 'react-i18next';
 import SquareRoute from './SquareRoute';
@@ -11,11 +11,13 @@ import axios from 'axios';
 import globalStyles from '../../../styles/GlobalStyles';
 import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 import { MyButton } from '../../shared/components/MyButton';
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MapViewDirections from 'react-native-maps-directions';
 import { AuthContext } from '../../../context/auth';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -23,6 +25,32 @@ import { useNavigation } from '@react-navigation/native';
 
 var height1 = Dimensions.get("window").height; //con height se multiplica por ejemp *0.02 y vamos probando por numero para encontrar el tamaño deseado
 var width1 = Dimensions.get("window").width;
+
+const { width: screenWidth } = Dimensions.get('window')
+
+interface Slide {
+    title: string;
+    desc: string;
+    img: ImageSourcePropType
+}
+
+const items: Slide[] = [
+    {
+        title: 'Rutas',
+        desc: 'Selecciona la Ruta que te interese para ver su ubicación en el mapa y su información.',
+        img: require('../../../assets/RouteAsset1.png')
+    },
+    {
+        title: 'Buscador de Ruta',
+        desc: 'En el buscador de rutas escribimos la Ruta que deseemos buscar y nos arrojara los resultados. ',
+        img: require('../../../assets/RouteAsset2.png')
+    },
+    {
+        title: 'Favoritos',
+        desc: 'Para agregar nuestras rutas favoritas es necesario seleccionar el boton agregar favoritos y posteriormente seleccionar las rutas que queramos agregar o quitar de Favoritos. Una vez terminemos de agregar o eliminar presionamos el boton Finalizar. ',
+        img: require('../../../assets/RouteAsset3.png')
+    },
+]
 
 
 const RoutesScreen = () => {
@@ -288,7 +316,7 @@ const RoutesScreen = () => {
             } catch (error) {
                 setRutasfav([])
                 // console.error('Error al consultar Ruta Favorita');
-                
+
             }
         }
     };
@@ -307,6 +335,20 @@ const RoutesScreen = () => {
 
     const navigation = useNavigation();
 
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+    const isVisible = useRef(false)
+
+    const renderItem = (item: Slide) => {
+        return (
+            <View style={{ flex: 1, backgroundColor: 'black', borderRadius: 5, padding: 40, justifyContent: 'center' }}>
+                <Image source={item.img} style={{ width: 350, height: 400, resizeMode: 'center', right: 10 }} />
+                <Text style={{ ...styles.title2, color: 'red' }}>{item.title}</Text>
+                <Text style={{ ...styles.subtitle, color: 'white' }}>{item.desc}</Text>
+            </View>
+        )
+    }
+
 
 
 
@@ -321,7 +363,12 @@ const RoutesScreen = () => {
             <View>
                 <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} />
             </View>
-            <Text style={styles.title}>{t('routes:title')}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity style={{ position: 'absolute', paddingLeft: 300 }} onPress={() => setShowModal(true)}>
+                    <Ionicons name="help-circle-outline" size={40} color='white' />
+                </TouchableOpacity>
+                <Text style={styles.title}>{t('routes:title')}</Text>
+            </View>
             <MyInput
                 value={selectedRoute.value}
                 placeholder={t('routes:searchRoute')}
@@ -358,6 +405,79 @@ const RoutesScreen = () => {
                 </View>
                     : null}
             </View>
+
+            {showModal === true ? (
+                <Modal>
+                    <SafeAreaView
+                        style={{
+                            flex: 1,
+                            backgroundColor: 'black',
+                            paddingTop: 50,
+                        }}
+                    >
+
+                        <Carousel
+                            data={items}
+                            renderItem={({ item }) => renderItem(item)}
+                            sliderWidth={screenWidth}
+                            itemWidth={screenWidth}
+                            layout="default"
+                            onSnapToItem={(index) => {
+                                setActiveIndex(index)
+                                if (index === 2) {
+                                    isVisible.current = true;
+                                }
+                            }}
+                        />
+                        <View style={{
+                            flexDirection: 'row',
+                            alignContent: 'space-between',
+                            backgroundColor: 'black',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginHorizontal: 20
+                        }}>
+                            <Pagination
+                                dotsLength={items.length}
+                                activeDotIndex={activeIndex}
+                                dotStyle={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: 10,
+                                    backgroundColor: 'red'
+                                }}
+                            />
+                            <View>
+                                <TouchableOpacity style={{
+                                    flexDirection: 'row',
+                                    backgroundColor: 'red',
+                                    width: 140,
+                                    height: 50,
+                                    borderRadius: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        if (isVisible.current) {
+                                            console.log('navegar ...')
+                                            // navigation.navigate('HomeScreen');
+                                            setShowModal(false)
+                                        }
+                                    }}
+                                >
+                                    <Text style={{
+                                        fontSize: 25,
+                                        color: 'white'
+                                    }}>Aceptar</Text>
+                                    {/* <Icon style={{ paddingTop: 4 }} name="chevron-forward-outline" color="white" size={25} /> */}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </SafeAreaView>
+                </Modal>
+
+            ): null}
 
 
             <ScrollView style={styles.container}>
@@ -626,6 +746,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginVertical: 20,
     },
+    title2: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#5856D6'
+    },
+    subtitle: {
+        fontSize: 16
+    }
 })
 
 export default RoutesScreen
